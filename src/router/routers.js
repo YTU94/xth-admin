@@ -44,31 +44,6 @@ export default [
     ]
   },
   {
-    path: '',
-    name: 'doc',
-    meta: {
-      title: '文档',
-      href: 'https://lison16.github.io/iview-admin-doc/#/',
-      icon: 'ios-book'
-    }
-  },
-  {
-    path: '/join',
-    name: 'join',
-    component: Main,
-    children: [
-      {
-        path: 'join_page',
-        name: 'join_page',
-        meta: {
-          icon: '_qq',
-          title: 'QQ群'
-        },
-        component: () => import('@/view/join-page.vue')
-      }
-    ]
-  },
-  {
     path: '/components',
     name: 'components',
     meta: {
@@ -78,24 +53,6 @@ export default [
     component: Main,
     children: [
       {
-        path: 'count_to_page',
-        name: 'count_to_page',
-        meta: {
-          icon: 'md-trending-up',
-          title: '数字渐变'
-        },
-        component: () => import('@/view/components/count-to/count-to.vue')
-      },
-      {
-        path: 'drag_list_page',
-        name: 'drag_list_page',
-        meta: {
-          icon: 'ios-infinite',
-          title: '拖拽列表'
-        },
-        component: () => import('@/view/components/drag-list/drag-list.vue')
-      },
-      {
         path: 'tables_page',
         name: 'tables_page',
         meta: {
@@ -103,15 +60,6 @@ export default [
           title: '多功能表格'
         },
         component: () => import('@/view/components/tables/tables.vue')
-      },
-      {
-        path: 'split_pane_page',
-        name: 'split_pane_page',
-        meta: {
-          icon: 'md-pause',
-          title: '分割窗口'
-        },
-        component: () => import('@/view/components/split-pane/split-pane.vue')
       },
       {
         path: 'markdown_page',
@@ -201,123 +149,68 @@ export default [
     ]
   },
   {
-    path: '/tools_methods',
-    name: 'tools_methods',
-    meta: {
-      hide: true
-    },
-    component: Main,
+    path: '/vuene',
+    name: 'vuene',
+    component: Main, 
     children: [
       {
-        path: 'tools_methods_page',
-        name: 'tools_methods_page',
+        path: '/',
+        name: '/',
         meta: {
-          icon: 'ios-hammer',
-          title: '工具方法'
+          icon: 'md-add',
+          title: '场馆'
         },
-        component: () => import('@/view/tools-methods/tools-methods.vue')
+        component: () => import('@/view/vuene/index.vue')
       }
-    ]
+    ] 
   },
   {
-    path: '/directive',
-    name: 'directive',
-    meta: {
-      hide: true
-    },
-    component: Main,
+    path: '/coach',
+    name: 'coach',
+    component: Main, 
     children: [
       {
-        path: 'directive_page',
-        name: 'directive_page',
+        path: '/',
+        name: '/',
         meta: {
-          icon: 'ios-navigate',
-          title: '指令'
+          icon: 'md-add',
+          title: '教练'
         },
-        component: () => import('@/view/directive/directive.vue')
+        component: () => import('@/view/coach/index.vue')
       }
-    ]
+    ] 
   },
   {
-    path: '/multilevel',
-    name: 'multilevel',
-    meta: {
-      icon: 'md-menu',
-      title: '多级菜单'
-    },
-    component: Main,
+    path: '/coupons',
+    name: 'coupons',
+    component: Main, 
     children: [
       {
-        path: 'level_2_1',
-        name: 'level_2_1',
+        path: '/',
+        name: '/',
         meta: {
-          icon: 'md-funnel',
-          title: '二级-1'
+          icon: 'md-add',
+          title: '场馆'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
-      },
-      {
-        path: 'level_2_2',
-        name: 'level_2_2',
-        meta: {
-          access: ['super_admin'],
-          icon: 'md-funnel',
-          showAlways: true,
-          title: '二级-2'
-        },
-        component: parentView,
-        children: [
-          {
-            path: 'level_2_2_1',
-            name: 'level_2_2_1',
-            meta: {
-              icon: 'md-funnel',
-              title: '三级'
-            },
-            component: () => import('@/view/multilevel/level-2-2/level-3-1.vue')
-          }
-        ]
-      },
-      {
-        path: 'level_2_3',
-        name: 'level_2_3',
-        meta: {
-          icon: 'md-funnel',
-          title: '二级-3'
-        },
-        component: () => import('@/view/multilevel/level-2-3.vue')
-      },
-    ]
+        component: () => import('@/view/coupons/index.vue')
+      }
+    ] 
   },
   {
-    path: '/argu',
-    name: 'argu',
-    meta: {
-      hideInMenu: true
-    },
-    component: Main,
+    path: '/users',
+    name: 'users',
+    component: Main, 
     children: [
       {
-        path: 'params/:id',
-        name: 'params',
+        path: '/',
+        name: '/',
         meta: {
-          icon: 'md-flower',
-          title: '动态路由',
-          notCache: true
+          icon: 'md-add',
+          title: '场馆'
         },
-        component: () => import('@/view/argu-page/params.vue')
-      },
-      {
-        path: 'query',
-        name: 'query',
-        meta: {
-          icon: 'md-flower',
-          title: '带参路由',
-          notCache: true
-        },
-        component: () => import('@/view/argu-page/query.vue')
+        component: () => import('@/view/users/index.vue')
       }
-    ]
+    ] 
   },
   {
     path: '/401',
@@ -325,7 +218,7 @@ export default [
     meta: {
       hideInMenu: true
     },
-    component: () => import('@/view/error-page/401.vue')
+    component: () => import('@/view/vuene/index.vue')
   },
   {
     path: '/500',

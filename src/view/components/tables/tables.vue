@@ -1,26 +1,31 @@
 <template>
   <div>
     <Card>
+      <Button style="margin: 10px 0;" type="primary" @click="exportExcel">新增</Button>
       <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns" @on-delete="handleDelete"/>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
+    <edit-dialog></edit-dialog>
+
     </Card>
   </div>
 </template>
 
 <script>
 import Tables from '_c/tables'
+import EditDialog from '_c/edit-dialog'
 import { getTableData } from '@/api/data'
 export default {
   name: 'tables_page',
   components: {
-    Tables
+    Tables,
+    EditDialog
   },
   data () {
     return {
       columns: [
-        {title: 'Name', key: 'name', sortable: true},
-        {title: 'Email', key: 'email', editable: true},
-        {title: 'Create-Time', key: 'createTime'},
+        { title: 'Name', key: 'name', sortable: true, editable: true },
+        { title: 'Email', key: 'email', editable: true },
+        { title: 'Create-Time', key: 'createTime', editable: true },
         {
           title: 'Handle',
           key: 'handle',
@@ -39,8 +44,11 @@ export default {
                   }
                 }
               }, [
-                h('Button', '自定义删除')
+                h('Button', '删除')
               ])
+            },
+            (h, params, vm) => {
+              return h('Button', '编辑2')
             }
           ]
         }
@@ -59,13 +67,14 @@ export default {
     }
   },
   mounted () {
-    getTableData().then(res => {
+    debugger
+    getTableData({}).then(res => {
       this.tableData = res.data
     })
   }
 }
 </script>
 
-<style>
+<style lang="less">
 
 </style>

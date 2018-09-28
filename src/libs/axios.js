@@ -2,14 +2,23 @@ import axios from 'axios'
 // import { Spin } from 'iview'
 class HttpRequest {
   constructor (baseUrl = baseURL) {
-    this.baseUrl = baseUrl
+    this.baseUrl = 'http://47.92.217.9:9090'
     this.queue = {}
   }
   getInsideConfig () {
     const config = {
       baseURL: this.baseUrl,
+      // proxy: {
+      //   host: '127.0.0.1',
+      //   port: 9000,
+      //   auth: {
+      //     username: 'mikeymike',
+      //     password: 'rapunz3l'
+      //   }
+      // },
       headers: {
         //
+        'content-type': 'application/json;charset=UTF-8'
       }
     }
     return config

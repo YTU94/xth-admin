@@ -1,15 +1,18 @@
 import axios from '@/libs/api.request'
 
-export const getTableData = () => {
+// http://47.92.217.9:9090/rest/store/listPagination
+export const getTableData = (params) => {
   return axios.request({
-    url: 'get_table_data',
-    method: 'get'
+    url: 'rest/store/listPagination',
+    method: 'post',
+    params: params
   })
 }
 
-export const getDragList = () => {
+export const getDragList = (params) => {
   return axios.request({
     url: 'get_drag_list',
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
