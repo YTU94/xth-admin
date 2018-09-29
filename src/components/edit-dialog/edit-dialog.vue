@@ -24,7 +24,7 @@ export default {
   },
   data () {
     return {
-      modal1: true
+      modal1: false
     }
   },
   computed: {
@@ -33,6 +33,8 @@ export default {
     }
   },
   methods: {
+    ok () {},
+    cancel () {},
     handleInput (val) {
       this.$emit('input', val)
     },

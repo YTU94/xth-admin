@@ -149,18 +149,18 @@ export default [
     ]
   },
   {
-    path: '/vuene',
-    name: 'vuene',
+    path: '/venue',
+    name: 'venue',
     component: Main, 
     children: [
       {
-        path: '/',
-        name: '/',
+        path: 'venue',
+        name: 'venue',
         meta: {
           icon: 'md-add',
           title: '场馆'
         },
-        component: () => import('@/view/vuene/index.vue')
+        component: () => import('@/view/venue/index.vue')
       }
     ] 
   },
@@ -170,8 +170,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: '/',
-        name: '/',
+        path: 'coach',
+        name: 'coach',
         meta: {
           icon: 'md-add',
           title: '教练'
@@ -186,8 +186,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: '/',
-        name: '/',
+        path: 'coupons',
+        name: 'coupons',
         meta: {
           icon: 'md-add',
           title: '场馆'
@@ -202,8 +202,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: '/',
-        name: '/',
+        path: 'users',
+        name: 'users',
         meta: {
           icon: 'md-add',
           title: '场馆'
