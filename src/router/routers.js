@@ -48,19 +48,10 @@ export default [
     name: 'components',
     meta: {
       icon: 'logo-buffer',
-      title: '组件'
+      title: '活动'
     },
     component: Main,
     children: [
-      {
-        path: 'tables_page',
-        name: 'tables_page',
-        meta: {
-          icon: 'md-grid',
-          title: '多功能表格'
-        },
-        component: () => import('@/view/components/tables/tables.vue')
-      },
       {
         path: 'markdown_page',
         name: 'markdown_page',
@@ -78,44 +69,6 @@ export default [
           title: '富文本编辑器'
         },
         component: () => import('@/view/components/editor/editor.vue')
-      },
-      {
-        path: 'icons_page',
-        name: 'icons_page',
-        meta: {
-          icon: '_bear',
-          title: '自定义图标'
-        },
-        component: () => import('@/view/components/icons/icons.vue')
-      }
-    ]
-  },
-  {
-    path: '/update',
-    name: 'update',
-    meta: {
-      icon: 'md-cloud-upload',
-      title: '数据上传'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'update_table_page',
-        name: 'update_table_page',
-        meta: {
-          icon: 'ios-document',
-          title: '上传Csv'
-        },
-        component: () => import('@/view/update/update-table.vue')
-      },
-      {
-        path: 'update_paste_page',
-        name: 'update_paste_page',
-        meta: {
-          icon: 'md-clipboard',
-          title: '粘贴表格数据'
-        },
-        component: () => import('@/view/update/update-paste.vue')
       }
     ]
   },
@@ -190,7 +143,7 @@ export default [
         name: 'coupons',
         meta: {
           icon: 'md-add',
-          title: '场馆'
+          title: '优惠卷'
         },
         component: () => import('@/view/coupons/index.vue')
       }
@@ -206,7 +159,7 @@ export default [
         name: 'users',
         meta: {
           icon: 'md-add',
-          title: '场馆'
+          title: '用户'
         },
         component: () => import('@/view/users/index.vue')
       }
@@ -218,7 +171,7 @@ export default [
     meta: {
       hideInMenu: true
     },
-    component: () => import('@/view/vuene/index.vue')
+    component: () => import('@/view/venue/index.vue')
   },
   {
     path: '/500',

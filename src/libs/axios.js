@@ -1,8 +1,12 @@
 import axios from 'axios'
 // import { Spin } from 'iview'
+
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8'
+
 class HttpRequest {
   constructor (baseUrl = baseURL) {
     this.baseUrl = 'http://47.92.217.9:9090'
+    this.data = {}
     this.queue = {}
   }
   getInsideConfig () {
@@ -18,12 +22,14 @@ class HttpRequest {
       // },
       headers: {
         //
-        'content-type': 'application/json;charset=UTF-8'
-      }
+        'X-Tag': 'admin',
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      data: this.data
     }
     return config
   }
-  distroy (url) {
+  destroy (url) {
     delete this.queue[url]
     if (!Object.keys(this.queue).length) {
       // Spin.hide()
@@ -43,11 +49,11 @@ class HttpRequest {
     })
     // 响应拦截
     instance.interceptors.response.use(res => {
-      this.distroy(url)
-      const { data, status } = res
-      return { data, status }
+      this.destroy(url)
+      // const { data, status } = res
+      return res.data
     }, error => {
-      this.distroy(url)
+      this.destroy(url)
       return Promise.reject(error)
     })
   }

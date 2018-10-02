@@ -5,7 +5,10 @@ export const getTableData = (params) => {
   return axios.request({
     url: '/rest/store/listPagination',
     method: 'post',
-    params: params
+    params: params,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    }
   })
 }
 

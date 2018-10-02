@@ -1,15 +1,35 @@
 import axios from '@/libs/api.request'
 
-export const getTableData = () => {
+export const getStoreList = (params) => {
   return axios.request({
-    url: 'get_table_data',
-    method: 'get'
+    url: '/rest/store/listPagination',
+    method: 'post',
+    data: params
+  })
+}
+// 新建场馆
+export const createStore = (data) => {
+  return axios.request({
+    url: '/rest/store/create',
+    method: 'post',
+    data
   })
 }
 
-export const getDragList = () => {
+// 删除场馆
+export const deleteStore = (params) => {
   return axios.request({
-    url: 'get_drag_list',
-    method: 'get'
+    url: '/rest/store/delete',
+    method: 'get',
+    params
+  })
+}
+
+// 跟新场馆
+export const updateStore = (data) => {
+  return axios.request({
+    url: '/rest/store/update',
+    method: 'post',
+    data
   })
 }

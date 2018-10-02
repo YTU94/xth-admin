@@ -14,9 +14,16 @@
 <script>
 import LoginForm from '_c/login-form'
 import { mapActions } from 'vuex'
+import { getCouponsList } from '@/api/coupons'
+
 export default {
   components: {
     LoginForm
+  },
+  mounted () {
+    getCouponsList({ pageSize: 1 }).then(res => {
+      console.log(res)
+    })
   },
   methods: {
     ...mapActions([

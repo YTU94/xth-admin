@@ -13,7 +13,7 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getTableData } from '@/api/data'
+import { getCoachList } from '@/api/coach'
 export default {
   name: 'tables_page',
   components: {
@@ -67,7 +67,8 @@ export default {
     }
   },
   mounted () {
-    getTableData({}).then(res => {
+    console.log('获取教练数据')
+    getCoachList({ pageSize: 1 }).then(res => {
       this.tableData = []
     })
   }
