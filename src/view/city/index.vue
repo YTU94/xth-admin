@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
+      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增城市</Button>
       <tables ref="tables"
         editable
         searchable
@@ -25,7 +25,7 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getCouponList } from '@/api/coupon'
+import { getCoachList } from '@/api/coach'
 
 export default {
   name: 'tables_page',
@@ -110,7 +110,7 @@ export default {
     }
   },
   mounted () {
-    getCouponList({ pageSze: '1' }).then(res => {
+    getCoachList({ pageSze: '1' }).then(res => {
       this.tableData = res.pageList.list
       this.storeTotal = res.pageList.count
     })

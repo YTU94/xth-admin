@@ -1,11 +1,11 @@
 import axios from '@/libs/api.request'
 
 // http://47.92.217.9:9090/rest/store/listPagination
-export const getCouponsList = (params) => {
+export const getCouponList = (data) => {
   return axios.request({
     url: '/rest/coupon/listPagination',
     method: 'post',
-    params: params
+    data: data
   })
 }
 // 新建优惠卷

@@ -1,11 +1,27 @@
 <template>
   <div>
     <Card>
-      <Button style="margin: 10px 0;" type="primary" @click="exportExcel">新12增</Button>
-      <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns" @on-delete="handleDelete"/>
+      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
+      <tables ref="tables"
+        editable
+        searchable
+        search-place="top"
+        v-model="tableData"
+        :columns="columns"
+        @on-save-edit="saveEdit"/>
+      <!-- page -->
+      <Row type="flex" justify="end">
+        <Col>
+          <Page :total="storeTotal" show-total />
+        </Col>
+      </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
-    <edit-dialog></edit-dialog>
-
+      <!-- 编辑 -->
+      <edit-dialog
+        :title="title"
+        :showModal="showModal"
+        :formDynamic="formDynamic"
+        @save="save"></edit-dialog>
     </Card>
   </div>
 </template>
@@ -13,7 +29,8 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getCoachList } from '@/api/coach'
+import { getCoachList, createCoach } from '@/api/coach'
+
 export default {
   name: 'tables_page',
   components: {
@@ -22,12 +39,44 @@ export default {
   },
   data () {
     return {
+      title: '新增教练',
+      storeTotal: 0,
+      showModal: false,
+      formDynamic: {
+        items: [
+          {
+            value: '',
+            index: 1,
+            status: 1,
+            name: '名称'
+          },
+          {
+            value: '',
+            index: 1,
+            status: 1,
+            name: '返利'
+          }, {
+            value: '',
+            index: 1,
+            status: 1,
+            name: '地址'
+          },
+          {
+            value: '',
+            index: 1,
+            status: 1,
+            name: '联系人'
+          }
+        ]
+      },
       columns: [
-        { title: 'Name', key: 'name', sortable: true, editable: true },
-        { title: 'Email', key: 'email', editable: true },
-        { title: 'Create-Time', key: 'createTime', editable: true },
+        { title: '名称', key: 'name', sortable: true, editable: true },
+        { title: '返利', key: 'discountContentMessage', editable: true },
+        { title: '联系人', key: 'contactName', editable: true },
+        { title: '地址', key: 'address', editable: true },
+        // { title: '联系人', key: 'contactName', editable: true },
         {
-          title: 'Handle',
+          title: '操作',
           key: 'handle',
           options: ['delete'],
           button: [
@@ -39,16 +88,10 @@ export default {
                 },
                 on: {
                   'on-ok': () => {
-                    vm.$emit('on-delete', params)
-                    vm.$emit('input', params.tableData.filter((item, index) => index !== params.row.initRowIndex))
+                    vm.$emit('deleteStore', params)
                   }
                 }
-              }, [
-                h('Button', '删除')
-              ])
-            },
-            (h, params, vm) => {
-              return h('Button', '编辑2')
+              })
             }
           ]
         }
@@ -57,19 +100,29 @@ export default {
     }
   },
   methods: {
-    handleDelete (params) {
-      console.log(params)
+    save () {
+      createCoach({}).then(res => {
+        console.log(res)
+      })
     },
     exportExcel () {
       this.$refs.tables.exportCsv({
         filename: `table-${(new Date()).valueOf()}.csv`
       })
+    },
+    deleteStore (params) {
+      console.log(params, '走接口删除')
+      params.tableData.filter((item, index) => index !== params.row.initRowIndex)
+    },
+    saveEdit (params) {
+      console.log(params, '保存编辑')
+      params.row.name = params.column.name
     }
   },
   mounted () {
-    console.log('获取教练数据')
-    getCoachList({ pageSize: 1 }).then(res => {
-      this.tableData = []
+    getCoachList({ pageSze: '1' }).then(res => {
+      this.tableData = res.pageList.list
+      this.storeTotal = res.pageList.count
     })
   }
 }

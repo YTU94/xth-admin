@@ -8,11 +8,12 @@ export const getStoreList = (params) => {
   })
 }
 // 新建场馆
-export const createStore = (data) => {
+export const createStore = (params) => {
+  debugger
   return axios.request({
     url: '/rest/store/create',
     method: 'post',
-    data
+    data: params
   })
 }
 

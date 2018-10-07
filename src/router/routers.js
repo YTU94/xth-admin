@@ -150,6 +150,22 @@ export default [
     ] 
   },
   {
+    path: '/city',
+    name: 'city',
+    component: Main, 
+    children: [
+      {
+        path: 'city',
+        name: 'city',
+        meta: {
+          icon: 'md-add',
+          title: '城市'
+        },
+        component: () => import('@/view/city/index.vue')
+      }
+    ] 
+  },
+  {
     path: '/users',
     name: 'users',
     component: Main, 

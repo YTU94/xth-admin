@@ -37,7 +37,8 @@ export default {
           password
         }).then(res => {
           const data = res.data
-          commit('setToken', data.token)
+          // commit('setToken', data)
+          console.log(data)
           resolve()
         }).catch(err => {
           reject(err)
@@ -64,7 +65,7 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(res => {
-          const data = res.data || {}
+          const data = res || {}
           commit('setAvator', data.avator)
           commit('setUserName', data.user_name)
           commit('setUserId', data.user_id)

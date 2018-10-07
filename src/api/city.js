@@ -1,36 +1,36 @@
 import axios from '@/libs/api.request'
 
 // http://47.92.217.9:9090/rest/store/listPagination
-export const getCoachList = (data) => {
+export const getCityList = (data) => {
   return axios.request({
-    url: '/rest/coach/listPagination',
+    url: '/rest/city/listPagination',
     method: 'post',
     data
   })
 }
 
 // 新建教练
-export const createCoach = (data) => {
+export const createCity = (data) => {
   return axios.request({
-    url: '/rest/coach/create',
+    url: '/rest/city/create',
     method: 'post',
     data
   })
 }
 
 // 删除教练
-export const deleteCoach = (params) => {
+export const deleteCity = (params) => {
   return axios.request({
-    url: '/rest/coach/delete',
+    url: '/rest/city/delete',
     method: 'get',
     params
   })
 }
 
 // 跟新教练
-export const updateCoach = (data) => {
+export const updateCity = (data) => {
   return axios.request({
-    url: '/rest/coach/update',
+    url: '/rest/city/update',
     method: 'post',
     data
   })
