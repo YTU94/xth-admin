@@ -79,6 +79,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getStoreList, createStore, updateStore, deleteStore } from '@/api/vuene'
@@ -244,8 +245,8 @@ export default {
   methods: {
     // save
     save () {
-      const data = { ...this.formDynamic }
-      this._createStore(data)
+      // const data = { ...this.formDynamic }
+      this._createStore({})
     },
     change () {},
     exportExcel () {
@@ -320,6 +321,13 @@ export default {
     }
   },
   mounted () {
+    axios.request({
+      url: 'http://47.92.217.9:9090/rest/store/listPagination',
+      method: 'POST',
+      data: { pageSze: 1 }
+    }).then(res => {
+      console.log(res)
+    })
     getStoreList({ pageSze: '1' }).then(res => {
       this.tableData = res.pageList.list
       this.storeTotal = res.pageList.count

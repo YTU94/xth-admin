@@ -8,6 +8,7 @@
         search-place="top"
         v-model="tableData"
         :columns="columns"
+        @on-delete="handleDelete"
         @on-save-edit="saveEdit"/>
       <!-- page -->
       <Row type="flex" justify="end">
@@ -29,7 +30,7 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getCoachList, createCoach } from '@/api/coach'
+import { getCoachList, createCoach, deleteCoach, updateCoach } from '@/api/coach'
 
 export default {
   name: 'tables_page',
@@ -70,24 +71,25 @@ export default {
         ]
       },
       columns: [
-        { title: '名称', key: 'name', sortable: true, editable: true },
-        { title: '返利', key: 'discountContentMessage', editable: true },
-        { title: '联系人', key: 'contactName', editable: true },
-        { title: '地址', key: 'address', editable: true },
+        { title: '姓名', key: 'name', sortable: true, editable: true },
+        { title: '电话', key: 'phone', editable: true },
+        { title: '特长', key: 'speciality', editable: true },
+        { title: '性别', key: 'gender', editable: true },
         // { title: '联系人', key: 'contactName', editable: true },
         {
-          title: '操作',
+          title: '操作1',
           key: 'handle',
           options: ['delete'],
-          button: [
+          render: [
             (h, params, vm) => {
               return h('Poptip', {
                 props: {
                   confirm: true,
-                  title: '你确定要删除吗?'
+                  title: '你确定要删除jiaolian吗?'
                 },
                 on: {
                   'on-ok': () => {
+                    debugger
                     vm.$emit('deleteStore', params)
                   }
                 }
@@ -110,9 +112,24 @@ export default {
         filename: `table-${(new Date()).valueOf()}.csv`
       })
     },
+    _updateCoach (data) {
+      updateCoach(data).then(res => {
+        console.log(res)
+      })
+    },
+    handleDelete (params) {
+      deleteCoach({ id: params.row.id }).then(res => {
+        debugger
+        console.log(params, '走接口删除')
+        params.tableData.filter((item, index) => index !== params.row.initRowIndex)
+      })
+    },
     deleteStore (params) {
-      console.log(params, '走接口删除')
-      params.tableData.filter((item, index) => index !== params.row.initRowIndex)
+      deleteCoach({ id: params.id }).then(res => {
+        debugger
+        console.log(params, '走接口删除')
+        params.tableData.filter((item, index) => index !== params.row.initRowIndex)
+      })
     },
     saveEdit (params) {
       console.log(params, '保存编辑')
