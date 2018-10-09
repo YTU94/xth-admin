@@ -36,10 +36,7 @@ export default {
           userName,
           password
         }).then(res => {
-          debugger
-          const data = res.data
-          commit('setToken', data.token)
-          console.log(data)
+          commit('setToken', res.token)
           resolve()
         }).catch(err => {
           reject(err)
