@@ -89,7 +89,6 @@ export default {
                 },
                 on: {
                   'on-ok': () => {
-                    debugger
                     vm.$emit('deleteStore', params)
                   }
                 }
