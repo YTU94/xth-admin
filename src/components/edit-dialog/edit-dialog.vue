@@ -4,7 +4,7 @@
       :title="title"
       @on-ok="ok"
       @on-cancel="cancel">
-      <Form ref="formDynamic" :model="formDynamic" :label-width="80" style="width: 300px">
+      <Form ref="formDynamic" :model="formDynamic" :label-width="120" style="width: 350px">
         <FormItem
             v-for="(item, index) in formDynamic.items"
             v-if="item.status"

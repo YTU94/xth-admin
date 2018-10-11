@@ -23,13 +23,18 @@
         :showModal="showModal"
         :formDynamic="formDynamic"
         @save="save">
-        <FormItem label="城市">
+        <FormItem label="折扣类型">
           <Row>
-            <Col span="24">
             <Select v-model="model1" style="width:200px">
               <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
-            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="城市">
+          <Row>
+            <Select v-model="model1" style="width:200px">
+              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
           </Row>
         </FormItem>
         <FormItem label="是否热门">
@@ -97,10 +102,6 @@ export default {
         {
           'name': 'a42bdcc1178e62b4694c830f028db5c0',
           'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-        },
-        {
-          'name': 'bc7521e033abdd1e92222d733590f104',
-          'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
         }
       ],
       imgName: '',
@@ -114,22 +115,6 @@ export default {
         {
           value: 'London',
           label: 'London'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
         }
       ],
       model1: '',
@@ -155,7 +140,7 @@ export default {
             key: 'address',
             index: 1,
             status: 1,
-            name: '地址'
+            name: '详细地址'
           },
           {
             value: '',
@@ -170,6 +155,20 @@ export default {
             index: 1,
             status: 1,
             name: '联系人手机号'
+          },
+          {
+            value: '',
+            key: 'starLevel',
+            index: 1,
+            status: 1,
+            name: '星级'
+          },
+          {
+            value: '',
+            key: 'contactPhone',
+            index: 1,
+            status: 1,
+            name: 'inStuNums'
           }
         ]
       },
@@ -296,15 +295,13 @@ export default {
       }
       return check
     },
-    refresh () {
-      this.init()
-    },
     /*
     * api func
     */
     _createStore (data) {
       createStore(data).then(res => {
-        this.refresh()
+        this.init()
+        this.showModal = false
       })
     },
     _updateStore (data) {
@@ -313,9 +310,8 @@ export default {
       })
     },
     _deleteStore (params) {
-      // params.tableData.filter((item, index) => index !== params.row.initRowIndex)
       deleteStore({ id: params.row.id }).then(res => {
-        this.refresh()
+        this.init()
       })
     },
     _getStoreList (data) {

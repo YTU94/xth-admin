@@ -137,6 +137,9 @@ export default {
     }
   },
   methods: {
+    init () {
+      this._getCoachList({ pageSze: '1' })
+    },
     save () {
       const data = {}
       this.formDynamic.items.forEach(e => {
@@ -172,7 +175,8 @@ export default {
     */
     _createCoach (data) {
       createCoach(data).then(res => {
-        this.refresh()
+        this.init()
+        this.showModal = false
       })
     },
     _updateCoach (data) {
@@ -182,7 +186,7 @@ export default {
     },
     _deleteCoach (params) {
       deleteCoach({ id: params.row.id }).then(res => {
-        this.refresh()
+        this.init()
       })
     },
     _getCoachList (data) {
@@ -193,10 +197,7 @@ export default {
     }
   },
   mounted () {
-    getCoachList({ pageSze: '1' }).then(res => {
-      this.tableData = res.pageList.list
-      this.storeTotal = res.pageList.count
-    })
+    this.init()
   }
 }
 </script>

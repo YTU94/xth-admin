@@ -8,6 +8,7 @@
         search-place="top"
         v-model="tableData"
         :columns="columns"
+        @on-delete="deleteHandle"
         @on-save-edit="saveEdit"/>
       <!-- page -->
       <Row type="flex" justify="end">
@@ -120,6 +121,9 @@ export default {
       })
       this._createCoupon(data)
     },
+    deleteHandle (params) {
+      this._deleteCoupon({ id: params.row.id })
+    },
     exportExcel () {
       this.$refs.tables.exportCsv({
         filename: `table-${(new Date()).valueOf()}.csv`
@@ -138,7 +142,8 @@ export default {
     */
     _createCoupon (data) {
       createCoupon(data).then(res => {
-        this.refresh()
+        this.init()
+        this.showModal = false
       })
     },
     _updateCoupon (data) {
@@ -148,8 +153,8 @@ export default {
     },
     _deleteCoupon (params) {
       // params.tableData.filter((item, index) => index !== params.row.initRowIndex)
-      deleteCoupon({ id: params.row.id }).then(res => {
-        this.refresh()
+      deleteCoupon(params).then(res => {
+        this.init()
       })
     },
     _getCouponList (data, merge) {
