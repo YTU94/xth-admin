@@ -85,7 +85,7 @@ export default [
         path: 'upload-excel',
         name: 'upload-excel',
         meta: {
-          icon: 'md-add',
+          icon: 'ios-cube',
           title: '导入EXCEL'
         },
         component: () => import('@/view/excel/upload-excel.vue')
@@ -110,7 +110,7 @@ export default [
         path: 'venue',
         name: 'venue',
         meta: {
-          icon: 'md-add',
+          icon: 'ios-cube',
           title: '场馆'
         },
         component: () => import('@/view/venue/index.vue')
@@ -126,7 +126,7 @@ export default [
         path: 'coach',
         name: 'coach',
         meta: {
-          icon: 'md-add',
+          icon: 'ios-cube',
           title: '教练'
         },
         component: () => import('@/view/coach/index.vue')
@@ -142,7 +142,7 @@ export default [
         path: 'coupons',
         name: 'coupons',
         meta: {
-          icon: 'md-add',
+          icon: 'ios-cube',
           title: '优惠卷'
         },
         component: () => import('@/view/coupons/index.vue')
@@ -158,7 +158,7 @@ export default [
         path: 'city',
         name: 'city',
         meta: {
-          icon: 'md-add',
+          icon: 'ios-cube',
           title: '城市'
         },
         component: () => import('@/view/city/index.vue')
@@ -174,7 +174,7 @@ export default [
         path: 'users',
         name: 'users',
         meta: {
-          icon: 'md-add',
+          icon: 'ios-cube',
           title: '用户'
         },
         component: () => import('@/view/users/index.vue')

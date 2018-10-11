@@ -1,14 +1,15 @@
 <template>
   <div>
-    <Row :gutter="20">
+    <h1>欢迎使用星体汇中台</h1>
+    <!-- <Row :gutter="20">
       <i-col span="4" v-for="(infor, i) in inforCardData" :key="`infor-${i}`" style="height: 120px;">
         <infor-card shadow :color="infor.color" :icon="infor.icon" :icon-size="36">
           <count-to :end="infor.count" count-class="count-style"/>
           <p>{{ infor.title }}</p>
         </infor-card>
       </i-col>
-    </Row>
-    <Row :gutter="20" style="margin-top: 20px;">
+    </Row> -->
+    <!-- <Row :gutter="20" style="margin-top: 20px;">
       <i-col span="8">
         <Card shadow>
           <chart-pie style="height: 300px;" :value="pieData" text="用户访问来源"></chart-pie>
@@ -19,12 +20,12 @@
           <chart-bar style="height: 300px;" :value="barData" text="每周用户活跃量"/>
         </Card>
       </i-col>
-    </Row>
-    <Row style="margin-top: 20px;">
+    </Row> -->
+    <!-- <Row style="margin-top: 20px;">
       <Card shadow>
         <example style="height: 310px;"/>
       </Card>
-    </Row>
+    </Row> -->
   </div>
 </template>
 
@@ -53,11 +54,11 @@ export default {
         { title: '新增页面', icon: 'md-map', count: 14, color: '#9A66E4' }
       ],
       pieData: [
-        {value: 335, name: '直接访问'},
-        {value: 310, name: '邮件营销'},
-        {value: 234, name: '联盟广告'},
-        {value: 135, name: '视频广告'},
-        {value: 1548, name: '搜索引擎'}
+        { value: 335, name: '直接访问' },
+        { value: 310, name: '邮件营销' },
+        { value: 234, name: '联盟广告' },
+        { value: 135, name: '视频广告' },
+        { value: 1548, name: '搜索引擎' }
       ],
       barData: {
         Mon: 13253,

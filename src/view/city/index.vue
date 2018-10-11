@@ -25,7 +25,7 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getCoachList } from '@/api/coach'
+import { getCityList, createCity, deleteCity, updateCity } from '@/api/coach'
 
 export default {
   name: 'tables_page',
@@ -95,6 +95,9 @@ export default {
     }
   },
   methods: {
+    init () {
+      this._getCityList({ pageSize: 1 })
+    },
     exportExcel () {
       this.$refs.tables.exportCsv({
         filename: `table-${(new Date()).valueOf()}.csv`
@@ -107,13 +110,33 @@ export default {
     saveEdit (params) {
       console.log(params, '保存编辑')
       params.row.name = params.column.name
+    },
+    /*
+    * api func
+    */
+    _createCity (data) {
+      createCity(data).then(res => {
+        this.refresh()
+      })
+    },
+    _updateCity (data) {
+      updateCity(data).then(res => {
+        console.log(res)
+      })
+    },
+    _deleteCity (params) {
+      deleteCity({ id: params.row.id }).then(res => {
+        this.refresh()
+      })
+    },
+    _getCityList (data) {
+      getCityList(data).then(res => {
+        console.log(res)
+      })
     }
   },
   mounted () {
-    getCoachList({ pageSze: '1' }).then(res => {
-      this.tableData = res.pageList.list
-      this.storeTotal = res.pageList.count
-    })
+    this.init()
   }
 }
 </script>

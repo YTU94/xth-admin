@@ -3,11 +3,12 @@
     <Card>
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
       <tables ref="tables"
-        editable
         searchable
         search-place="top"
         v-model="tableData"
         :columns="columns"
+        @on-update="update"
+        @on-delete="_deleteStore"
         @on-save-edit="saveEdit"/>
       <!-- page -->
       <Row type="flex" justify="end">
@@ -32,7 +33,7 @@
           </Row>
         </FormItem>
         <FormItem label="是否热门">
-              <i-switch v-model="switch1" @on-change="change" />
+              <i-switch v-model="switch1" @on-change="changeIshot" />
         </FormItem>
         <FormItem label="图片">
           <Row>
@@ -79,7 +80,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getStoreList, createStore, updateStore, deleteStore } from '@/api/vuene'
@@ -139,29 +139,34 @@ export default {
         items: [
           {
             value: '',
+            key: 'name',
             index: 1,
             status: 1,
             name: '名称'
           },
           {
             value: '',
+            key: 'discountContent',
             index: 1,
             status: 1,
             name: '返利'
           }, {
             value: '',
+            key: 'address',
             index: 1,
             status: 1,
             name: '地址'
           },
           {
             value: '',
+            key: 'contactName',
             index: 1,
             status: 1,
             name: '联系人姓名'
           },
           {
             value: '',
+            key: 'contactPhone',
             index: 1,
             status: 1,
             name: '联系人手机号'
@@ -174,49 +179,27 @@ export default {
         { title: '返利', key: 'discountContentMessage', editable: true },
         { title: '联系人', key: 'contactName', editable: true },
         { title: '地址', key: 'address', editable: true },
-        { title: '城市',
-          key: 'city',
-          options: ['delete'],
-          render: (h, params) => {
-            return h('div', [
-              h('upload', {
-                props: {
-                  action: '//jsonplaceholder.typicode.com/posts'
-                }
-              }),
-              h('strong', params.row.name)
-            ])
-          }
-        },
+        { title: '城市', key: 'city' },
         {
           title: '图片',
           key: 'img',
           options: ['delete'],
           render: (h, params) => {
-            return h('div', [
-              h('upload', {
-                props: {
-                  action: '//jsonplaceholder.typicode.com/posts'
+            return h('img', {
+              attrs: {
+                src: params.row.imgUrl || 'https://secure.gravatar.com/avatar/5e549e9992e2f6a350efd704e9d56036?s=50&r=pg&d=https%3A%2F%2Fdeveloper.mozilla.org%2Fstatic%2Fimg%2Favatar.png'
+              },
+              style: {
+                width: '80px',
+                height: 'auto'
+              },
+              on: {
+                'click': () => {
+                  console.log(params)
                 }
-              }),
-              h('strong', params.row.name)
-            ])
+              }
+            }, '编辑')
           }
-          // (h, params, vm) => {
-          //   return h('upload', {
-          //     props: {
-          //       action: '//jsonplaceholder.typicode.com/posts/'
-          //     }
-          //   }, [
-          //     (h, params, vm) => {
-          //       return h('button', {
-          //         props: {
-          //           icon: 'ios-cloud-upload-outline'
-          //         }
-          //       }, '上传图片')
-          //     }
-          //   ], 'text')
-          // }
         },
         {
           title: '操作',
@@ -224,17 +207,28 @@ export default {
           options: ['delete'],
           button: [
             (h, params, vm) => {
-              return h('Poptip', {
-                props: {
-                  confirm: true,
-                  title: '你确定要删除吗?'
-                },
-                on: {
-                  'on-ok': () => {
-                    vm.$emit('deleteStore', params)
+              return [
+                h('Poptip', {
+                  props: {
+                    confirm: true,
+                    title: '你确定要删除吗?'
+                  },
+                  on: {
+                    'on-ok': () => {
+                      vm.$emit('on-delete', params)
+                    }
                   }
-                }
-              })
+                }),
+                h('Button', {
+                  props: {},
+                  on: {
+                    'click': () => {
+                      vm.$emit('on-update', params)
+                      console.log('122222222')
+                    }
+                  }
+                }, '编辑')
+              ]
             }
           ]
         }
@@ -243,20 +237,26 @@ export default {
     }
   },
   methods: {
+    init () {
+      this._getStoreList({ pageSze: '1' })
+    },
     // save
     save () {
-      // const data = { ...this.formDynamic }
-      this._createStore({})
+      let data = {}
+      this.formDynamic.items.forEach(e => {
+        data[e.key] = e.value
+      })
+      this._createStore(data)
     },
-    change () {},
+    update (params) {
+      console.log(params)
+    },
+    // check ishot
+    changeIshot () {},
     exportExcel () {
       this.$refs.tables.exportCsv({
         filename: `table-${(new Date()).valueOf()}.csv`
       })
-    },
-    deleteStore (params) {
-      console.log(params, '走接口删除')
-      params.tableData.filter((item, index) => index !== params.row.initRowIndex)
     },
     saveEdit (params) {
       console.log(params, '保存编辑')
@@ -296,12 +296,15 @@ export default {
       }
       return check
     },
+    refresh () {
+      this.init()
+    },
     /*
     * api func
     */
     _createStore (data) {
       createStore(data).then(res => {
-        console.log(res)
+        this.refresh()
       })
     },
     _updateStore (data) {
@@ -309,29 +312,21 @@ export default {
         console.log(res)
       })
     },
-    _deleteStore (data) {
-      deleteStore(data).then(res => {
-        console.log(res)
+    _deleteStore (params) {
+      // params.tableData.filter((item, index) => index !== params.row.initRowIndex)
+      deleteStore({ id: params.row.id }).then(res => {
+        this.refresh()
       })
     },
     _getStoreList (data) {
       getStoreList(data).then(res => {
-        console.log(res)
+        this.tableData = res.pageList.list
+        this.storeTotal = res.pageList.count
       })
     }
   },
   mounted () {
-    axios.request({
-      url: 'http://47.92.217.9:9090/rest/store/listPagination',
-      method: 'POST',
-      data: { pageSze: 1 }
-    }).then(res => {
-      console.log(res)
-    })
-    getStoreList({ pageSze: '1' }).then(res => {
-      this.tableData = res.pageList.list
-      this.storeTotal = res.pageList.count
-    })
+    this.init()
   }
 }
 </script>
