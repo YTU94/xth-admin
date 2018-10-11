@@ -27,6 +27,7 @@
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getCouponList, createCoupon, deleteCoupon, updateCoupon } from '@/api/coupon'
+import { uploadImg } from '@/api/common'
 
 export default {
   name: 'tables_page',
@@ -111,7 +112,7 @@ export default {
   },
   methods: {
     init () {
-      this._getCouponList({ pageSze: 1 })
+      this._getCouponList({ pageSize: 5, pageNunber: 1 })
     },
     // save
     save () {
@@ -119,7 +120,9 @@ export default {
       this.formDynamic.items.forEach(e => {
         data[e.key] = e.value
       })
-      this._createCoupon(data)
+      data.applyCityId = 1
+      data.type = 'RATE' // FULL_REDUCTION RATE
+      this._createCoupon(JSON.stringify(data))
     },
     deleteHandle (params) {
       this._deleteCoupon({ id: params.row.id })
@@ -160,10 +163,17 @@ export default {
     _getCouponList (data, merge) {
       getCouponList(data).then(res => {
         res.pageList.list.forEach(e => {
-          e.content = `满${e.contentList[0]}减${e.contentList[1]}元`
+          if (e.contentList && e.contentList.length > 0) {
+            e.content = `满${e.contentList[0]}减${e.contentList[1]}元`
+          }
         })
         this.tableData = res.pageList.list
         this.storeTotal = res.pageList.count
+      })
+    },
+    _uploadImg (data) {
+      uploadImg(data).then(res => {
+        console.log(res)
       })
     }
   },

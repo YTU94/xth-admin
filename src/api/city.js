@@ -1,6 +1,5 @@
 import axios from '@/libs/api.request'
 
-// http://47.92.217.9:9090/rest/store/listPagination
 export const getCityList = (data) => {
   return axios.request({
     url: '/rest/city/listPagination',
@@ -14,7 +13,7 @@ export const createCity = (data) => {
   return axios.request({
     url: '/rest/city/create',
     method: 'post',
-    data
+    data: data
   })
 }
 

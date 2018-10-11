@@ -124,14 +124,12 @@ export default {
     save () {
       this.showModal = false
       const data = {
-        article: {
-          isHot: '',
-          slug: '',
-          title: this.article.title,
-          content: this.article.content
-        }
+        isHot: '',
+        slug: '',
+        title: this.article.title,
+        content: this.article.content
       }
-      this._createArticle(data)
+      this._createArticle(JSON.stringify(data))
     },
     // 删除文章
     deleteHandle (params) {

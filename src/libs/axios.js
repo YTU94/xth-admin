@@ -10,6 +10,7 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         //
+        'content-type': 'application/json;charset=UTF-8'
       }
     }
     return config

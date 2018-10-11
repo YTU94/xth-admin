@@ -23,13 +23,6 @@
         :showModal="showModal"
         :formDynamic="formDynamic"
         @save="save">
-        <FormItem label="折扣类型">
-          <Row>
-            <Select v-model="model1" style="width:200px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
-          </Row>
-        </FormItem>
         <FormItem label="城市">
           <Row>
             <Select v-model="model1" style="width:200px">
@@ -43,12 +36,12 @@
         <FormItem label="图片">
           <Row>
             <Col span="24">
-            <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
+            <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index"  @mouseover="uploadImgIcon = true" @mouseout="uploadImgIcon = false">
                 <template v-if="item.status === 'finished'">
                     <img :src="item.url">
-                    <div class="demo-upload-list-cover">
-                        <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                        <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                    <div class="demo-upload-list-cover" v-show="uploadImgIcon" >
+                        <Icon type="ios-eye-outline"  @click.native="handleView(item.name)"></Icon>
+                        <Icon type="ios-trash-outline"  @click.native="handleRemove(item)"></Icon>
                     </div>
                 </template>
                 <template v-else>
@@ -67,7 +60,8 @@
               :before-upload="handleBeforeUpload"
               multiple
               type="drag"
-              action="//jsonplaceholder.typicode.com/posts/"
+              :data="uploadImgData"
+              action="http://47.92.217.9:9091/rest/common/uploadImg"
               style="display: inline-block;width:58px;">
               <div style="width: 58px;height:58px;line-height: 58px;">
                   <Icon type="ios-camera" size="20"></Icon>
@@ -88,7 +82,11 @@
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getStoreList, createStore, updateStore, deleteStore } from '@/api/vuene'
-
+import { uploadImg } from '@/api/common'
+// const DISCOUNT_TYPE = [
+//   { label: '满减', value: '' },
+//   { label: '折扣', value: '' },
+// ]
 export default {
   name: 'tables_page',
   components: {
@@ -100,13 +98,24 @@ export default {
       title: '新增场馆',
       defaultList: [
         {
+          'status': 'finished',
           'name': 'a42bdcc1178e62b4694c830f028db5c0',
           'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
         }
       ],
       imgName: '',
+      uploadImgData: {
+        type: 'store'
+      },
       visible: false,
-      uploadList: [],
+      uploadImgIcon: false,
+      uploadList: [
+        {
+          'status': 'finished',
+          'name': 'a42bdcc1178e62b4694c830f028db5c0',
+          'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+        }
+      ],
       cityList: [
         {
           value: 'New York',
@@ -169,6 +178,13 @@ export default {
             index: 1,
             status: 1,
             name: 'inStuNums'
+          },
+          {
+            value: '',
+            key: 'starLevel',
+            index: 1,
+            status: 1,
+            name: '折扣百分比'
           }
         ]
       },
@@ -267,6 +283,7 @@ export default {
       this.visible = true
     },
     handleRemove (file) {
+      console.log('删除')
       const fileList = this.$refs.upload.fileList
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
@@ -319,6 +336,11 @@ export default {
         this.tableData = res.pageList.list
         this.storeTotal = res.pageList.count
       })
+    },
+    _uploadImg (data) {
+      uploadImg(data).then(res => {
+        console.log(res)
+      })
     }
   },
   mounted () {
@@ -328,5 +350,36 @@ export default {
 </script>
 
 <style lang="less">
-
+.demo-upload-list {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+    box-shadow: 0 1px 1px rgba(0,0,0,.2);
+    margin-right: 4px;
+}
+.demo-upload-list img {
+    width: 100%;
+    height: 100%;
+}
+.demo-upload-list-cover {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,.6);
+}
+.demo-upload-list-cover i {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0 2px;
+}
 </style>

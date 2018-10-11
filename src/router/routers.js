@@ -157,6 +157,22 @@ export default [
     ] 
   },
   {
+    path: '/level',
+    name: 'level',
+    component: Main, 
+    children: [
+      {
+        path: 'level',
+        name: 'level',
+        meta: {
+          icon: 'ios-cube',
+          title: '等级'
+        },
+        component: () => import('@/view/level/index.vue')
+      }
+    ] 
+  },
+  {
     path: '/users',
     name: 'users',
     component: Main, 
