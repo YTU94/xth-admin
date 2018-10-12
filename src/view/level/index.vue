@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增城市</Button>
+      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增场馆等级</Button>
       <tables ref="tables"
         editable
         searchable
@@ -16,7 +16,46 @@
           <Page :total="cityTotal" show-total />
         </Col>
       </Row>
-      <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
+      <!-- 编辑 -->
+      <edit-dialog :showModal="showModal" :formDynamic="formDynamic"  @save="save"></edit-dialog>
+    </Card>
+    <br>
+    <Card>
+      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增教练等级</Button>
+      <tables ref="tables"
+        editable
+        searchable
+        search-place="top"
+        v-model="tableData"
+        :columns="columns"
+        @on-delete="deleteCity"
+        @on-save-edit="saveEdit"/>
+      <!-- page -->
+      <Row type="flex" justify="end">
+        <Col>
+          <Page :total="cityTotal" show-total />
+        </Col>
+      </Row>
+      <!-- 编辑 -->
+      <edit-dialog :showModal="showModal" :formDynamic="formDynamic"  @save="save"></edit-dialog>
+    </Card>
+    <br>
+    <Card>
+      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增会员等级</Button>
+      <tables ref="tables"
+        editable
+        searchable
+        search-place="top"
+        v-model="tableData"
+        :columns="columns"
+        @on-delete="deleteCity"
+        @on-save-edit="saveEdit"/>
+      <!-- page -->
+      <Row type="flex" justify="end">
+        <Col>
+          <Page :total="cityTotal" show-total />
+        </Col>
+      </Row>
       <!-- 编辑 -->
       <edit-dialog :showModal="showModal" :formDynamic="formDynamic"  @save="save"></edit-dialog>
     </Card>

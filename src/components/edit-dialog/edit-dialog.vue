@@ -2,6 +2,7 @@
     <Modal
       v-model="showModal"
       :title="title"
+      footer-hide="false"
       @on-ok="ok"
       @on-cancel="cancel">
       <Form ref="formDynamic" :model="formDynamic" :label-width="120" style="width: 350px">
@@ -19,10 +20,10 @@
           </Row>
         </FormItem>
         <slot></slot>
-        <!-- <FormItem>
-            <Button type="primary" @click="handleSubmit('formDynamic')">Submit</Button>
-            <Button @click="handleReset('formDynamic')" style="margin-left: 8px">Reset</Button>
-        </FormItem> -->
+        <FormItem>
+            <Button type="primary" @click="handleSubmit('formDynamic')">保存</Button>
+            <!-- <Button @click="handleReset('formDynamic')" style="margin-left: 8px">Reset</Button> -->
+        </FormItem>
       </Form>
     </Modal>
 </template>
@@ -32,8 +33,8 @@ export default {
   name: 'editDialog',
   props: {
     title: String,
-    showModal: [Boolean],
-    value: [String, Number],
+    showModal: [Boolean, String, Number],
+    // value: [String, Number],
     edittingCellId: String,
     params: Object,
     editable: Boolean,
@@ -45,13 +46,30 @@ export default {
     }
   },
   computed: {
+    dsiabled () {
+      return false
+      // this.$refs.formDynamic.validate((valid) => {
+      //   if (valid) {
+      //     return false
+      //   } else {
+      //     return true
+      //   }
+      // })
+    },
     isEditting () {
       return this.edittingCellId === `editting-${this.params.index}-${this.params.column.key}`
     }
   },
   methods: {
     ok () {
-      this.$emit('save', this.formDynamic)
+      this.$refs.formDynamic.validate((valid) => {
+        if (valid) {
+          this.$emit('save', this.formDynamic)
+        } else {
+          this.$Message.error('Fail!')
+          return false
+        }
+      })
     },
     cancel () {
       this.$emit('cancel', this.formDynamic)
@@ -61,6 +79,7 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$Message.success('Success!')
+          this.$emit('save', this.formDynamic)
         } else {
           this.$Message.error('Fail!')
         }
