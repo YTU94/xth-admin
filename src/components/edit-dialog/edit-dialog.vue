@@ -2,7 +2,7 @@
     <Modal
       v-model="showModal"
       :title="title"
-      footer-hide="false"
+      :footer-hide="Boolean(false)"
       @on-ok="ok"
       @on-cancel="cancel">
       <Form ref="formDynamic" :model="formDynamic" :label-width="120" style="width: 350px">
@@ -34,7 +34,7 @@ export default {
   props: {
     title: String,
     showModal: [Boolean, String, Number],
-    // value: [String, Number],
+    value: [String, Number],
     edittingCellId: String,
     params: Object,
     editable: Boolean,
