@@ -173,6 +173,22 @@ export default [
     ] 
   },
   {
+    path: '/rebateOrder',
+    name: 'rebateOrder',
+    component: Main, 
+    children: [
+      {
+        path: 'rebateOrder',
+        name: 'rebateOrder',
+        meta: {
+          icon: 'ios-cube',
+          title: '返利订单'
+        },
+        component: () => import('@/view/rebateOrder/index.vue')
+      }
+    ] 
+  },
+  {
     path: '/users',
     name: 'users',
     component: Main, 
