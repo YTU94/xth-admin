@@ -22,7 +22,15 @@
         :title="title"
         :showModal="showModal"
         :formDynamic="formDynamic"
-        @save="save"></edit-dialog>
+        @save="save">
+        <FormItem label="场馆">
+          <Row>
+            <Select v-model="model1" style="width:200px">
+              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </Row>
+        </FormItem>
+      </edit-dialog>
     </Card>
   </div>
 </template>
@@ -58,28 +66,55 @@ export default {
             index: 1,
             status: 1,
             name: '电话'
+          },
+          {
+            value: '',
+            key: 'idNumber',
+            index: 1,
+            status: 1,
+            name: '身份证号'
+          }, {
+            value: '',
+            key: 'gender',
+            index: 1,
+            status: 1,
+            name: '性别'
+          }, {
+            value: '',
+            key: 'starLevel',
+            index: 1,
+            status: 1,
+            name: '星级'
+          }, {
+            value: '',
+            key: 'ccieNum',
+            index: 1,
+            status: 1,
+            name: '证书数量'
+          }, {
+            value: '',
+            key: 'classNum',
+            index: 1,
+            status: 1,
+            name: '课程数量'
           }, {
             value: '',
             key: 'speciality',
             index: 1,
             status: 1,
             name: '特长'
-          },
-          {
-            value: '',
-            key: 'gender',
-            index: 1,
-            status: 1,
-            name: '性别'
           }
         ]
       },
       columns: [
         { title: '姓名', key: 'name', sortable: true, editable: true },
         { title: '电话', key: 'phone', editable: true },
-        { title: '特长', key: 'speciality', editable: true },
+        { title: '身份证号', key: 'idNumber', editable: true },
         { title: '性别', key: 'gender', editable: true },
-        // { title: '联系人', key: 'contactName', editable: true },
+        { title: '星级', key: 'starLevel', editable: true },
+        { title: '证书数量', key: 'ccieNum', editable: true },
+        { title: '课程数量', key: 'classNum', editable: true },
+        { title: '特长', key: 'speciality', editable: true },
         {
           title: '图片',
           key: 'img',

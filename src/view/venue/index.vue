@@ -22,11 +22,12 @@
         :title="title"
         :showModal="showModal"
         :formDynamic="formDynamic"
-        @save="save">
+        @save="save"
+        @cancel="showModal = false">
         <FormItem label="城市">
           <Row>
             <Select v-model="model1" style="width:200px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in cityList" :value="item.id" :key="item.id">{{ item.name }}</Option>
             </Select>
           </Row>
         </FormItem>
@@ -82,6 +83,7 @@
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getStoreList, createStore, updateStore, deleteStore } from '@/api/vuene'
+import { getCityList } from '@/api/city'
 import { uploadImg } from '@/api/common'
 // const DISCOUNT_TYPE = [
 //   { label: '满减', value: '' },
@@ -192,9 +194,13 @@ export default {
       columns: [
         { title: '名称', key: 'name', sortable: true, editable: true },
         { title: '返利', key: 'discountContentMessage', editable: true },
-        { title: '联系人', key: 'contactName', editable: true },
-        { title: '地址', key: 'address', editable: true },
+        { title: '联系人姓名', key: 'contactName', editable: true },
+        { title: '联系人电话', key: 'contactPhone', editable: true },
         { title: '城市', key: 'city' },
+        { title: '地址', key: 'address', editable: true },
+        { title: '在馆学员人数', key: 'inStuNums' },
+        { title: '热门度', key: 'hotLevel' },
+        { title: '星级', key: 'starLevel' },
         {
           title: '图片',
           key: 'img',
@@ -252,8 +258,11 @@ export default {
     }
   },
   methods: {
-    init () {
-      this._getStoreList({ pageSze: '1' })
+    init (city) {
+      this._getStoreList({ pageSize: 5, pageNumber: 1 })
+      if (city) {
+        this._getCityList({ pageSize: 10, pageNumber: 1, citySo: {} })
+      }
     },
     // save
     save () {
@@ -341,10 +350,15 @@ export default {
       uploadImg(data).then(res => {
         console.log(res)
       })
+    },
+    _getCityList (data) {
+      getCityList(data).then(res => {
+        this.cityList = res.pageList.list
+      })
     }
   },
   mounted () {
-    this.init()
+    this.init('city')
   }
 }
 </script>

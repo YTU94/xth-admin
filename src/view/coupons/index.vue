@@ -18,7 +18,16 @@
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
       <!-- 编辑 -->
-      <edit-dialog :showModal="showModal" :formDynamic="formDynamic" @save="save"></edit-dialog>
+
+      <edit-dialog :showModal="showModal" :formDynamic="formDynamic" @save="save">
+        <FormItem label="优惠类型">
+          <Row>
+            <Select v-model="model1" style="width:200px">
+              <Option v-for="(item, index) in DISCOUNT_TYPE" :value="item.value" :key="index">{{ item.label }}</Option>
+            </Select>
+          </Row>
+        </FormItem>
+      </edit-dialog>
     </Card>
   </div>
 </template>
@@ -28,7 +37,10 @@ import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getCouponList, createCoupon, deleteCoupon, updateCoupon } from '@/api/coupon'
 import { uploadImg } from '@/api/common'
-
+const DISCOUNT_TYPE = [ // eslint-disable-line
+  { label: '满减', value: '' },
+  { label: '折扣', value: '' }
+]
 export default {
   name: 'tables_page',
   components: {
@@ -37,6 +49,7 @@ export default {
   },
   data () {
     return {
+      DISCOUNT_TYPE: DISCOUNT_TYPE,
       storeTotal: 0,
       showModal: false,
       formDynamic: {
