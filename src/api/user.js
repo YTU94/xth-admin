@@ -28,3 +28,30 @@ export const logout = (token) => {
     method: 'post'
   })
 }
+
+// 获取用户list
+export const getClientList = (data) => {
+  return axios.request({
+    url: '/rest/client/listPagination',
+    method: 'post',
+    data
+  })
+}
+
+// 删除用户
+export const deleteClient = (params) => {
+  return axios.request({
+    url: '/rest/client/delete',
+    method: 'get',
+    params
+  })
+}
+
+// 跟新用户
+export const updateClient = (data) => {
+  return axios.request({
+    url: '/rest/client/update',
+    method: 'post',
+    data
+  })
+}

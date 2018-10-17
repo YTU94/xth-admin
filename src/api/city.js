@@ -8,7 +8,7 @@ export const getCityList = (data) => {
   })
 }
 
-// 新建教练
+// 新建城市
 export const createCity = (data) => {
   return axios.request({
     url: '/rest/city/create',
@@ -17,7 +17,7 @@ export const createCity = (data) => {
   })
 }
 
-// 删除教练
+// 删除城市
 export const deleteCity = (params) => {
   return axios.request({
     url: '/rest/city/delete',
@@ -26,7 +26,7 @@ export const deleteCity = (params) => {
   })
 }
 
-// 跟新教练
+// 跟新城市
 export const updateCity = (data) => {
   return axios.request({
     url: '/rest/city/update',

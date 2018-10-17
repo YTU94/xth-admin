@@ -3,7 +3,6 @@
     <Card>
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增城市</Button>
       <tables ref="tables"
-        editable
         searchable
         search-place="top"
         v-model="tableData"
@@ -57,27 +56,50 @@ export default {
         ]
       },
       columns: [
-        { title: '名称', key: 'name', sortable: true, editable: true },
-        { title: '简称', key: 'shortName', editable: true },
-        // { title: '联系人', key: 'contactName', editable: true },
+        { title: '用户ID', key: 'clientId', sortable: true, editable: true },
+        { title: '场馆', key: 'storeName', sortable: true, editable: true },
+        { title: '总金额', key: 'consumeMoney', editable: true },
+        { title: '返利金额', key: 'returnMoney', editable: true },
+        {
+          title: '凭证',
+          key: 'img',
+          options: ['delete'],
+          render: (h, params) => {
+            return h('img', {
+              attrs: {
+                src: params.row.attachment || 'https://secure.gravatar.com/avatar/5e549e9992e2f6a350efd704e9d56036?s=50&r=pg&d=https%3A%2F%2Fdeveloper.mozilla.org%2Fstatic%2Fimg%2Favatar.png'
+              },
+              style: {
+                width: '80px',
+                height: 'auto'
+              },
+              on: {
+                'click': () => {
+                  console.log(params)
+                }
+              }
+            }, '编辑')
+          }
+        },
         {
           title: '操作',
           key: 'handle',
-          options: ['delete'],
+          // options: ['delete'],
           button: [
             (h, params, vm) => {
               return [
-                h('Poptip', {
-                  props: {
-                    confirm: true,
-                    title: '你确定要删除吗?'
+                h('Button', {
+                  props: {},
+                  style: {
+                    'margin-right': '10px'
                   },
                   on: {
-                    'on-ok': () => {
-                      vm.$emit('on-delete', params)
+                    'click': () => {
+                      vm.$emit('on-update', params)
+                      console.log('122222222')
                     }
                   }
-                }),
+                }, '作废'),
                 h('Button', {
                   props: {},
                   on: {
@@ -86,7 +108,7 @@ export default {
                       console.log('122222222')
                     }
                   }
-                }, '编辑')
+                }, '返利')
               ]
             }
           ]

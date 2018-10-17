@@ -231,6 +231,8 @@ export default {
         {
           title: '操作',
           key: 'handle',
+          fixed: 'right',
+          width: 140,
           options: ['delete'],
           button: [
             (h, params, vm) => {
