@@ -3,7 +3,6 @@
     <Card>
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增文章</Button>
       <tables ref="tables"
-        editable
         searchable
         search-place="top"
         v-model="tableData"
@@ -96,16 +95,16 @@ export default {
                       vm.$emit('on-delete', params)
                     }
                   }
-                }),
-                h('Button', {
-                  props: {},
-                  on: {
-                    'click': () => {
-                      vm.$emit('on-update', params)
-                      console.log('122222222')
-                    }
-                  }
-                }, '编辑')
+                })
+                // h('Button', {
+                //   props: {},
+                //   on: {
+                //     'click': () => {
+                //       vm.$emit('on-update', params)
+                //       console.log('122222222')
+                //     }
+                //   }
+                // }, '编辑')
               ]
             }
           ]

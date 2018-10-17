@@ -98,8 +98,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: 'venue',
-        name: 'venue',
+        path: 'venueIndex',
+        name: 'venueIndex',
         meta: {
           icon: 'ios-cube',
           title: '场馆'
@@ -114,8 +114,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: 'coach',
-        name: 'coach',
+        path: 'coachIndex',
+        name: 'coachIndex',
         meta: {
           icon: 'ios-cube',
           title: '教练'
@@ -130,8 +130,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: 'coupons',
-        name: 'coupons',
+        path: 'couponsIndex',
+        name: 'couponsIndex',
         meta: {
           icon: 'ios-cube',
           title: '优惠卷'
@@ -146,8 +146,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: 'city',
-        name: 'city',
+        path: 'cityIndex',
+        name: 'cityIndex',
         meta: {
           icon: 'ios-cube',
           title: '城市'
@@ -156,30 +156,30 @@ export default [
       }
     ] 
   },
-  {
-    path: '/level',
-    name: 'level',
-    component: Main, 
-    children: [
-      {
-        path: 'level',
-        name: 'level',
-        meta: {
-          icon: 'ios-cube',
-          title: '等级'
-        },
-        component: () => import('@/view/level/index.vue')
-      }
-    ] 
-  },
+  // {
+  //   path: '/level',
+  //   name: 'level',
+  //   component: Main, 
+  //   children: [
+  //     {
+  //       path: 'levelIndex',
+  //       name: 'levelIndex',
+  //       meta: {
+  //         icon: 'ios-cube',
+  //         title: '等级'
+  //       },
+  //       component: () => import('@/view/level/index.vue')
+  //     }
+  //   ] 
+  // },
   {
     path: '/rebateOrder',
     name: 'rebateOrder',
     component: Main, 
     children: [
       {
-        path: 'rebateOrder',
-        name: 'rebateOrder',
+        path: 'rebateOrderIndex',
+        name: 'rebateOrderIndex',
         meta: {
           icon: 'ios-cube',
           title: '返利订单'
@@ -194,8 +194,8 @@ export default [
     component: Main, 
     children: [
       {
-        path: 'users',
-        name: 'users',
+        path: 'usersIndex',
+        name: 'usersIndex',
         meta: {
           icon: 'ios-cube',
           title: '用户'

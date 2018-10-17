@@ -3,7 +3,6 @@
     <Card>
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
       <tables ref="tables"
-        editable
         searchable
         search-place="top"
         v-model="tableData"
@@ -20,13 +19,36 @@
       <!-- 编辑 -->
 
       <edit-dialog :showModal="showModal" :formDynamic="formDynamic" @save="save">
-        <FormItem label="优惠类型">
+        <FormItem label="适用范围类型">
           <Row>
-            <Select v-model="model1" style="width:200px">
-              <Option v-for="(item, index) in DISCOUNT_TYPE" :value="item.value" :key="index">{{ item.label }}</Option>
+            <Select v-model="curCouponApplyType" @on-change="selectApplyType" style="width:200px">
+              <Option v-for="(item, index) in COUPON_APPLY_SCOPE" :value="item.value" :key="index">{{ item.label }}</Option>
             </Select>
           </Row>
         </FormItem>
+        <FormItem label="适用范围内容">
+          <Row>
+            <Select v-model="curApply" style="width:200px">
+              <Option v-if="applyList && applyList.length > 0" v-for="(item, index) in applyList" :value="item.id" :key="index">{{ item.name }}</Option>
+            </Select>
+          </Row>
+        </FormItem>
+        <FormItem label="优惠类型">
+          <Row>
+            <Select v-model="curCouponType" style="width:200px">
+              <Option v-for="(item, index) in DISCOUNT_TYPE" :value="item.value" :key="index">{{ item.label }}</Option>
+            </Select>
+          </Row>
+
+        </FormItem>
+        <FormItem label="有效截止时间">
+          <Row>
+            <Col span="4">
+              <DatePicker type="date" :value="effectTime" placeholder="Select date" style="width: 200px"></DatePicker>
+            </Col>
+          </Row>
+        </FormItem>
+
       </edit-dialog>
     </Card>
   </div>
@@ -37,9 +59,16 @@ import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getCouponList, createCoupon, deleteCoupon, updateCoupon } from '@/api/coupon'
 import { uploadImg } from '@/api/common'
+import { getStoreList } from '@/api/vuene'
+import { getCityList } from '@/api/city'
+
+const COUPON_APPLY_SCOPE = [ // eslint-disable-line
+  { label: '城市', value: 'CITY' },
+  { label: '场馆', value: 'STORE' }
+]
 const DISCOUNT_TYPE = [ // eslint-disable-line
-  { label: '满减', value: '' },
-  { label: '折扣', value: '' }
+  { label: '满减', value: 'FULL_REDUCTION' },
+  { label: '折扣', value: 'RATE' }
 ]
 export default {
   name: 'tables_page',
@@ -49,8 +78,14 @@ export default {
   },
   data () {
     return {
+      COUPON_APPLY_SCOPE: COUPON_APPLY_SCOPE,
       DISCOUNT_TYPE: DISCOUNT_TYPE,
+      curCouponType: '',
+      curCouponApplyType: '',
+      curApply: '', // 选择的城市或场馆
+      applyList: '', // 城市或场馆列表
       storeTotal: 0,
+      effectTime: '',
       showModal: false,
       formDynamic: {
         items: [
@@ -67,19 +102,6 @@ export default {
             index: 1,
             status: 1,
             name: '内容'
-          }, {
-            value: '',
-            key: 'applyScopeContent',
-            index: 1,
-            status: 1,
-            name: '使用范围'
-          },
-          {
-            value: '',
-            key: 'type',
-            index: 1,
-            status: 1,
-            name: '类型'
           }
         ]
       },
@@ -87,6 +109,7 @@ export default {
         { title: '名称', key: 'name', sortable: true, editable: true },
         { title: '内容', key: 'content', editable: true },
         { title: '使用范围', key: 'applyScopeContent', editable: true },
+        { title: '截止时间', key: 'effectTime', editable: true },
         { title: '类型', key: 'type', editable: true },
         {
           title: '操作',
@@ -105,16 +128,16 @@ export default {
                       vm.$emit('on-delete', params)
                     }
                   }
-                }),
-                h('Button', {
-                  props: {},
-                  on: {
-                    'click': () => {
-                      vm.$emit('on-update', params)
-                      console.log('122222222')
-                    }
-                  }
-                }, '编辑')
+                })
+                // h('Button', {
+                //   props: {},
+                //   on: {
+                //     'click': () => {
+                //       vm.$emit('on-update', params)
+                //       console.log('122222222')
+                //     }
+                //   }
+                // }, '编辑')
               ]
             }
           ]
@@ -134,8 +157,26 @@ export default {
         data[e.key] = e.value
       })
       data.applyCityId = 1
-      data.type = 'RATE' // FULL_REDUCTION RATE
+      data.type = this.curCouponType || 'RATE' // FULL_REDUCTION RATE
+      data.effectTime = this.effectTime
       this._createCoupon(JSON.stringify(data))
+    },
+    selectApplyType (value) {
+      this.applyList = []
+      this.curApply = ''
+      if (value === 'CITY') {
+        getCityList({}).then(res => {
+          this.applyList = res.pageList.list
+        })
+      } else if (value === 'STORE') {
+        getStoreList({}).then(res => {
+          this.applyList = res.pageList.list
+        })
+      } else {
+        return false
+      }
+      console.log(value, this.applyList)
+      this.$forceUpdate()
     },
     deleteHandle (params) {
       this._deleteCoupon({ id: params.row.id })

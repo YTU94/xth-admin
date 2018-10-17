@@ -56,8 +56,8 @@ export default {
         ]
       },
       columns: [
-        { title: '名称', key: 'name', sortable: true, editable: true },
-        { title: '简称', key: 'shortName', editable: true },
+        { title: '名称', key: 'name', sortable: true },
+        { title: '简称', key: 'shortName' },
         // { title: '联系人', key: 'contactName', editable: true },
         {
           title: '操作',
@@ -76,16 +76,16 @@ export default {
                       vm.$emit('on-delete', params)
                     }
                   }
-                }),
-                h('Button', {
-                  props: {},
-                  on: {
-                    'click': () => {
-                      vm.$emit('on-update', params)
-                      console.log('122222222')
-                    }
-                  }
-                }, '编辑')
+                })
+                // h('Button', {
+                //   props: {},
+                //   on: {
+                //     'click': () => {
+                //       vm.$emit('on-update', params)
+                //       console.log('122222222')
+                //     }
+                //   }
+                // }, '编辑')
               ]
             }
           ]

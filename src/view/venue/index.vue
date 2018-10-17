@@ -4,15 +4,13 @@
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
       <Upload
         style="display: inline-block;margin-left:20px;"
-        format="['jpg','jpeg','png', 'xlxs']"
+        :format="['jpg','jpeg','png', 'xlxs']"
         action="//jsonplaceholder.typicode.com/posts/">
         <Button icon="ios-cloud-upload-outline">模板导入</Button>
       </Upload>
       <tables ref="tables"
         searchable
-        search-place="top"
-        v-model="tableData"
-        value=""
+        :value="tableData"
         :columns="columns"
         @on-selection-change="selectChange"
         @on-update="update"
@@ -35,7 +33,7 @@
         <FormItem label="城市">
           <Row>
             <Select v-model="selectCityId" v-if="cityList && cityList.length > 0" style="width:200px">
-              <Option v-for="(item, index) in cityList" :value="item.id" :key="index">{{ item.name }}</Option>
+              <Option v-if="item" v-for="(item, index) in cityList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </Row>
         </FormItem>
@@ -105,6 +103,7 @@ export default {
   },
   data () {
     return {
+      tableData: [],
       title: '新增场馆',
       defaultList: [
         {
@@ -126,16 +125,7 @@ export default {
           'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
         }
       ],
-      cityList: [
-        {
-          value: 'New York',
-          label: 'New York'
-        },
-        {
-          value: 'London',
-          label: 'London'
-        }
-      ],
+      cityList: [],
       selectCityId: '',
       storeTotal: 0,
       showModal: false,
@@ -202,6 +192,7 @@ export default {
       columns: [
         {
           type: 'selection',
+          key: 'handle',
           width: 60,
           align: 'center'
         },
@@ -216,7 +207,7 @@ export default {
         { title: '星级', key: 'starLevel' },
         {
           title: '图片',
-          key: 'img',
+          key: 'handle',
           options: ['delete'],
           render: (h, params) => {
             return h('img', {
@@ -254,22 +245,21 @@ export default {
                       vm.$emit('on-delete', params)
                     }
                   }
-                }),
-                h('Button', {
-                  props: {},
-                  on: {
-                    'click': () => {
-                      vm.$emit('on-update', params)
-                      console.log('122222222')
-                    }
-                  }
-                }, '编辑')
+                })
+                // h('Button', {
+                //   props: {},
+                //   on: {
+                //     'click': () => {
+                //       vm.$emit('on-update', params)
+                //       console.log('122222222')
+                //     }
+                //   }
+                // }, '编辑')
               ]
             }
           ]
         }
-      ],
-      tableData: []
+      ]
     }
   },
   methods: {
@@ -312,7 +302,7 @@ export default {
     },
     saveEdit (params) {
       console.log(params, '保存编辑')
-      params.row.name = params.column.name
+      // params.row.name = params.column.name
     },
     // 图片管理
     handleView (name) {

@@ -12,7 +12,7 @@
       <!-- page -->
       <Row type="flex" justify="end">
         <Col>
-          <Page :total="cityTotal" show-total />
+          <Page :total="rebateTotal" :page-size="pageSize" show-total />
         </Col>
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
@@ -35,6 +35,7 @@ export default {
   },
   data () {
     return {
+      pageSize: 5,
       rebateTotal: 0,
       showModal: false,
       formDynamic: {

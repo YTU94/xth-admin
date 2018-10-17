@@ -34,7 +34,7 @@ export default {
   props: {
     title: String,
     showModal: [Boolean, String, Number],
-    value: [String, Number],
+    // value: [String, Number],
     edittingCellId: String,
     params: Object,
     editable: Boolean,

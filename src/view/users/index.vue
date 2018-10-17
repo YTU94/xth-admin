@@ -57,16 +57,15 @@ export default {
         ]
       },
       columns: [
-        { title: '客户ID', key: 'id', sortable: true, editable: true },
-        { title: '昵称', key: 'nickname', editable: true },
-        { title: '手机号', key: 'mobile', editable: true },
-        { title: 'openId', key: 'openId', editable: true },
-        { title: '创建时间', key: 'createdTimeDate', editable: true },
-        { title: '最后一次登陆时间', key: 'lastLoginTimeDate', editable: true },
+        { title: '客户ID', key: 'id', sortable: true },
+        { title: '昵称', key: 'nickname' },
+        { title: '手机号', key: 'mobile' },
+        { title: 'openId', key: 'openId' },
+        { title: '创建时间', key: 'createdTimeDate' },
+        { title: '最后一次登陆时间', key: 'lastLoginTimeDate' },
         {
           title: '操作',
           key: 'handle',
-          fixed: 'right',
           options: ['delete'],
           button: [
             (h, params, vm) => {
@@ -81,16 +80,7 @@ export default {
                       vm.$emit('on-delete', params)
                     }
                   }
-                }),
-                h('Button', {
-                  props: {},
-                  on: {
-                    'click': () => {
-                      vm.$emit('on-update', params)
-                      console.log('122222222')
-                    }
-                  }
-                }, '编辑')
+                })
               ]
             }
           ]
@@ -136,7 +126,6 @@ export default {
     },
     _getClientList (data) {
       getClientList(data).then(res => {
-        console.log(res)
         res.pageList.list.forEach(e => {
           if (e.hasOwnProperty('createdTime')) {
             e.createdTimeDate = getDate(e.createdTime, 'year')
