@@ -33,3 +33,12 @@ export const updateStore = (data) => {
     data
   })
 }
+
+// 跟新场馆
+export const exportStore = (data) => {
+  return axios.request({
+    url: '/rest/store/export',
+    method: 'post',
+    data
+  })
+}

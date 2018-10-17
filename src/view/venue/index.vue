@@ -6,6 +6,7 @@
         searchable
         search-place="top"
         v-model="tableData"
+        value=""
         :columns="columns"
         @on-update="update"
         @on-delete="_deleteStore"
@@ -16,18 +17,18 @@
           <Page :total="storeTotal" show-total />
         </Col>
       </Row>
-      <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
+      <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Xlsx文件</Button>
       <!-- 编辑 -->
       <edit-dialog
         :title="title"
         :showModal="showModal"
         :formDynamic="formDynamic"
         @save="save"
-        @cancel="showModal = false">
+        @cancel="cancel">
         <FormItem label="城市">
           <Row>
-            <Select v-model="model1" style="width:200px">
-              <Option v-for="item in cityList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+            <Select v-model="selectCityId" v-if="cityList && cityList.length > 0" style="width:200px">
+              <Option v-for="(item, index) in cityList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </Row>
         </FormItem>
@@ -82,7 +83,7 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getStoreList, createStore, updateStore, deleteStore } from '@/api/vuene'
+import { getStoreList, createStore, updateStore, deleteStore, exportStore } from '@/api/vuene'
 import { getCityList } from '@/api/city'
 import { uploadImg } from '@/api/common'
 // const DISCOUNT_TYPE = [
@@ -107,7 +108,7 @@ export default {
       ],
       imgName: '',
       uploadImgData: {
-        type: 'store'
+        imgType: 'store'
       },
       visible: false,
       uploadImgIcon: false,
@@ -128,61 +129,61 @@ export default {
           label: 'London'
         }
       ],
-      model1: '',
+      selectCityId: '',
       storeTotal: 0,
       showModal: false,
       formDynamic: {
         items: [
           {
-            value: '',
+            value: '杭州渣渣辉店',
             key: 'name',
             index: 1,
             status: 1,
             name: '名称'
           },
           {
-            value: '',
+            value: '7',
             key: 'discountContent',
             index: 1,
             status: 1,
             name: '返利'
           }, {
-            value: '',
+            value: '西斗门路77号',
             key: 'address',
             index: 1,
             status: 1,
             name: '详细地址'
           },
           {
-            value: '',
+            value: '李四',
             key: 'contactName',
             index: 1,
             status: 1,
             name: '联系人姓名'
           },
           {
-            value: '',
+            value: '182312413',
             key: 'contactPhone',
             index: 1,
             status: 1,
             name: '联系人手机号'
           },
           {
-            value: '',
+            value: '2',
             key: 'starLevel',
             index: 1,
             status: 1,
             name: '星级'
           },
           {
-            value: '',
-            key: 'contactPhone',
+            value: '100',
+            key: 'inStuNums',
             index: 1,
             status: 1,
-            name: 'inStuNums'
+            name: '在馆学员人数'
           },
           {
-            value: '',
+            value: '9',
             key: 'starLevel',
             index: 1,
             status: 1,
@@ -192,12 +193,17 @@ export default {
       },
       switch1: false,
       columns: [
-        { title: '名称', key: 'name', sortable: true, editable: true },
-        { title: '返利', key: 'discountContentMessage', editable: true },
-        { title: '联系人姓名', key: 'contactName', editable: true },
-        { title: '联系人电话', key: 'contactPhone', editable: true },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        { title: '名称', key: 'name', sortable: true },
+        { title: '返利', key: 'discountContentMessage' },
+        { title: '联系人姓名', key: 'contactName' },
+        { title: '联系人电话', key: 'contactPhone' },
         { title: '城市', key: 'city' },
-        { title: '地址', key: 'address', editable: true },
+        { title: '地址', key: 'address' },
         { title: '在馆学员人数', key: 'inStuNums' },
         { title: '热门度', key: 'hotLevel' },
         { title: '星级', key: 'starLevel' },
@@ -270,7 +276,12 @@ export default {
       this.formDynamic.items.forEach(e => {
         data[e.key] = e.value
       })
+      data.discountType = 'RATE' //
+      data.cityId = this.selectCityId || 0
       this._createStore(data)
+    },
+    cancel () {
+      this.showModal = false
     },
     update (params) {
       console.log(params)
@@ -278,9 +289,13 @@ export default {
     // check ishot
     changeIshot () {},
     exportExcel () {
-      this.$refs.tables.exportCsv({
-        filename: `table-${(new Date()).valueOf()}.csv`
+      exportStore({ idList: [1, 2] }).then(res => {
+        console.log(res)
+        // window.open(res)
       })
+      // this.$refs.tables.exportCsv({
+      //   filename: `table-${(new Date()).valueOf()}.csv`
+      // })
     },
     saveEdit (params) {
       console.log(params, '保存编辑')
@@ -297,6 +312,7 @@ export default {
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
     handleSuccess (res, file) {
+      console.log('图片上传 callback', res)
       file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
       file.name = '7eb99afb9d5f317c912f08b5212fd69a'
     },

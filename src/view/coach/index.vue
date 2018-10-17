@@ -25,8 +25,8 @@
         @save="save">
         <FormItem label="场馆">
           <Row>
-            <Select v-model="model1" style="width:200px">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="curStoreId" style="width:200px">
+              <Option v-for="(item, index) in storeList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </Row>
         </FormItem>
@@ -39,6 +39,7 @@
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
 import { getCoachList, createCoach, deleteCoach, updateCoach } from '@/api/coach'
+import { getStoreList } from '@/api/vuene'
 
 export default {
   name: 'tables_page',
@@ -49,6 +50,8 @@ export default {
   data () {
     return {
       title: '新增教练',
+      curStoreId: '',
+      storeList: [],
       storeTotal: 0,
       showModal: false,
       formDynamic: {
@@ -174,12 +177,14 @@ export default {
   methods: {
     init () {
       this._getCoachList({ pageSze: '1' })
+      this._getAllStoreList({})
     },
     save () {
       const data = {}
       this.formDynamic.items.forEach(e => {
         data[e.key] = e.value
       })
+      data.storeId = this.curStoreId
       this._createCoach(data)
     },
     exportExcel () {
@@ -189,7 +194,6 @@ export default {
     },
     handleDelete (params) {
       deleteCoach({ id: params.row.id }).then(res => {
-        debugger
         console.log(params, '走接口删除')
         params.tableData.filter((item, index) => index !== params.row.initRowIndex)
       })
@@ -208,6 +212,11 @@ export default {
     /*
     * api func
     */
+    _getAllStoreList (data) {
+      getStoreList(data).then(res => {
+        this.storeList = res.pageList.list
+      })
+    },
     _createCoach (data) {
       createCoach(data).then(res => {
         this.init()
