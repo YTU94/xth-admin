@@ -2,12 +2,19 @@
   <div>
     <Card>
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
+      <Upload
+        style="display: inline-block;margin-left:20px;"
+        format="['jpg','jpeg','png', 'xlxs']"
+        action="//jsonplaceholder.typicode.com/posts/">
+        <Button icon="ios-cloud-upload-outline">模板导入</Button>
+      </Upload>
       <tables ref="tables"
         searchable
         search-place="top"
         v-model="tableData"
         value=""
         :columns="columns"
+        @on-selection-change="selectChange"
         @on-update="update"
         @on-delete="_deleteStore"
         @on-save-edit="saveEdit"/>
@@ -232,7 +239,7 @@ export default {
           title: '操作',
           key: 'handle',
           fixed: 'right',
-          width: 140,
+          width: 150,
           options: ['delete'],
           button: [
             (h, params, vm) => {
@@ -287,6 +294,10 @@ export default {
     },
     update (params) {
       console.log(params)
+    },
+    // table select change 表格勾选
+    selectChange (selection) {
+      console.log(selection)
     },
     // check ishot
     changeIshot () {},
