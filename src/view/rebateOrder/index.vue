@@ -1,7 +1,6 @@
 <template>
   <div>
     <Card>
-      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增城市</Button>
       <tables ref="tables"
         searchable
         search-place="top"
@@ -61,6 +60,7 @@ export default {
         { title: '场馆', key: 'storeName', sortable: true, editable: true },
         { title: '总金额', key: 'consumeMoney', editable: true },
         { title: '返利金额', key: 'returnMoney', editable: true },
+        { title: '状态', key: 'statusName', editable: true },
         {
           title: '凭证',
           key: 'img',
@@ -170,6 +170,9 @@ export default {
     _getRebateList (data) {
       getRebateList(data).then(res => {
         console.log(res)
+        res.pageList.list.forEach(e => {
+          e.statusName = e.status === 'SUBMITED' ? '已提交' : '已返利'
+        })
         this.tableData = res.pageList.list
         this.rebateTotal = res.pageList.count
       })
