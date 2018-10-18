@@ -21,7 +21,7 @@
       <!-- page -->
       <Row type="flex" justify="end">
         <Col>
-          <Page :total="storeTotal" show-total />
+          <Page :total="storeTotal" :page-size="pageSize" @on-change="pageChange" show-total />
         </Col>
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Xlsx文件</Button>
@@ -45,12 +45,11 @@
         <FormItem label="图片">
           <Row>
             <Col span="24">
-            <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index"  @mouseover="uploadImgIcon = true" @mouseout="uploadImgIcon = false">
+            <div class="demo-upload-list" v-if="uploadList && uploadList.length > 0" v-for="(item, index) in uploadList" :key="index"  @mouseover="uploadImgIcon = true" @mouseout="uploadImgIcon = false">
                 <template v-if="item.status === 'finished'">
                     <img :src="item.url">
                     <div class="demo-upload-list-cover" v-show="uploadImgIcon" >
                         <Icon type="ios-eye-outline"  @click.native="handleView(item.name)"></Icon>
-                        <!-- <Icon type="ios-trash-outline"  @click.native="handleRemove(item)"></Icon> -->
                     </div>
                 </template>
                 <template v-else>
@@ -77,8 +76,7 @@
               </div>
             </Upload>
             <Modal title="View Image" v-model="visible">
-              <img :src="curStoreImg" alt="" style="width: 100%">
-                <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
+              <img :src="curStoreImg" v-if="visible && curStoreImg" style="width: 100%">
             </Modal>
             </Col>
           </Row>
@@ -106,13 +104,14 @@ export default {
   },
   data () {
     return {
+      pageSize: 5,
       tableData: [],
       title: '新增场馆',
       defaultList: [
         {
           'status': 'finished',
           'name': 'a42bdcc1178e62b4694c830f028db5c0',
-          'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+          'url': ''
         }
       ],
       imgName: '',
@@ -121,16 +120,12 @@ export default {
       },
       // 新增选择的img
       curStoreImg: '',
+      // 选择门店id list
+      selectStoreIdList: [],
       importStroeData: '',
       visible: false,
       uploadImgIcon: false,
-      uploadList: [
-        {
-          'status': 'finished',
-          'name': 'a42bdcc1178e62b4694c830f028db5c0',
-          'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-        }
-      ],
+      uploadList: [],
       cityList: [],
       selectCityId: '',
       storeTotal: 0,
@@ -281,6 +276,7 @@ export default {
       this.formDynamic.items.forEach(e => {
         data[e.key] = e.value
       })
+      data.imgUrl = this.curStoreImg
       data.discountType = 'RATE' //
       data.cityId = this.selectCityId || 0
       this._createStore(data)
@@ -291,14 +287,21 @@ export default {
     update (params) {
       console.log(params)
     },
+    // 改变页码
+    pageChange (v) {
+      this._getStoreList({ pageSize: this.pageSize, pageNumber: v })
+    },
     // table select change 表格勾选
     selectChange (selection) {
       console.log(selection)
+      this.selectStoreIdList = selection.map(e => {
+        return e.id
+      })
     },
     // check ishot
     changeIshot () {},
     exportExcel () {
-      exportStore({ idList: [1, 2] }).then(res => {
+      exportStore({ idList: this.selectStoreIdList }).then(res => {
         const content = res
         const blob = new Blob([content])
         const fileName = '场馆.xlsx'
@@ -333,12 +336,15 @@ export default {
       const fileList = this.$refs.upload.fileList
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
+    // 上传img 返回 res
     uploadImgSuccess (res, file) {
       console.log('图片上传 callback', res.vo)
       this.curStoreImg = res.vo
-      this.uploadList[0].url = res.vo
-      // file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
-      // file.name = '7eb99afb9d5f317c912f08b5212fd69a'
+      this.uploadList[0] = {
+        status: 'finished',
+        url: res.vo
+      }
+      this.$forceUpdate()
     },
     importStroeSuccess (res, file) {
       console.log('导入 场馆', res, file)

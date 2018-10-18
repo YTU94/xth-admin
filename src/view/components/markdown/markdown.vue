@@ -24,6 +24,43 @@
         </Col>
         <br>
         <Col span="24">
+          <span>图片：</span>
+          <div class="demo-upload-list" v-if="uploadList && uploadList.length > 0" v-for="(item, index) in uploadList" :key="index"  @mouseover="uploadImgIcon = true" @mouseout="uploadImgIcon = false">
+              <template v-if="item.status === 'finished'">
+                  <img :src="item.url">
+                  <div class="demo-upload-list-cover" v-show="uploadImgIcon" >
+                      <Icon type="ios-eye-outline"  @click.native="handleView(item.name)"></Icon>
+                  </div>
+              </template>
+              <template v-else>
+                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+              </template>
+          </div>
+          <Upload
+            ref="upload"
+            :show-upload-list="false"
+            :default-file-list="defaultList"
+            :on-success="uploadImgSuccess"
+            :format="['jpg','jpeg','png']"
+            :max-size="2048"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            :before-upload="handleBeforeUpload"
+            multiple
+            type="drag"
+            :data="uploadImgData"
+            action="http://47.92.217.9:9091/rest/common/uploadImg"
+            style="display: inline-block;width:58px;">
+            <div style="width: 58px;height:58px;line-height: 58px;">
+                <Icon type="ios-camera" size="20"></Icon>
+            </div>
+          </Upload>
+          <Modal title="View Image" v-model="visible">
+            <img :src="curArticleImg" v-if="visible && curArticleImg" style="width: 100%">
+          </Modal>
+        </Col>
+        <br>
+        <Col span="24">
           <markdown-editor  v-model="article.content"/>
         </Col>
         <Button style="margin: 10px 0;" type="default" @click="showModal = false">取消</Button>
@@ -48,6 +85,15 @@ export default {
   },
   data () {
     return {
+      // 图片
+      curArticleImg: '',
+      uploadList: [],
+      defaultList: [],
+      uploadImgData: {
+        imgType: 'article'
+      },
+      visible: false,
+
       articleTotal: 0,
       showModal: false,
       article: {
@@ -130,6 +176,37 @@ export default {
       }
       this._createArticle(JSON.stringify(data))
     },
+    // 上传img 返回 res
+    uploadImgSuccess (res, file) {
+      console.log('图片上传 callback', res.vo)
+      this.curArticleImg = res.vo
+      this.uploadList[0] = {
+        status: 'finished',
+        url: res.vo
+      }
+      this.$forceUpdate()
+    },
+    handleFormatError (file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+      })
+    },
+    handleMaxSize (file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+      })
+    },
+    handleBeforeUpload () {
+      const check = this.uploadList.length < 5
+      if (!check) {
+        this.$Notice.warning({
+          title: 'Up to five pictures can be uploaded.'
+        })
+      }
+      return check
+    },
     // 删除文章
     deleteHandle (params) {
       this._deleteArticle({ id: params.row.id })
@@ -167,6 +244,37 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less">
+.demo-upload-list {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+    box-shadow: 0 1px 1px rgba(0,0,0,.2);
+    margin-right: 4px;
+}
+.demo-upload-list img {
+    width: 100%;
+    height: 100%;
+}
+.demo-upload-list-cover {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,.6);
+}
+.demo-upload-list-cover i {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0 2px;
+}
 </style>

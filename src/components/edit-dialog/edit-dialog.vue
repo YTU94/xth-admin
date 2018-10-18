@@ -2,7 +2,7 @@
     <Modal
       v-model="showModal"
       :title="title"
-      :footer-hide="Boolean(false)"
+      :footer-hide="Boolean(true)"
       @on-ok="ok"
       @on-cancel="cancel">
       <Form ref="formDynamic" :model="formDynamic" :label-width="120" style="width: 350px">
