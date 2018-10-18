@@ -4,8 +4,10 @@
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
       <Upload
         style="display: inline-block;margin-left:20px;"
-        :format="['jpg','jpeg','png', 'xlxs']"
-        action="//jsonplaceholder.typicode.com/posts/">
+        :show-upload-list="Boolean(false)"
+        :on-success="importStroeSuccess"
+        :format="['jpg','jpeg','png', 'xlsx']"
+        action="http://47.92.217.9:9091/rest/store/import">
         <Button icon="ios-cloud-upload-outline">模板导入</Button>
       </Upload>
       <tables ref="tables"
@@ -59,7 +61,7 @@
               ref="upload"
               :show-upload-list="false"
               :default-file-list="defaultList"
-              :on-success="handleSuccess"
+              :on-success="uploadImgSuccess"
               :format="['jpg','jpeg','png']"
               :max-size="2048"
               :on-format-error="handleFormatError"
@@ -116,6 +118,7 @@ export default {
       uploadImgData: {
         imgType: 'store'
       },
+      importStroeData: '',
       visible: false,
       uploadImgIcon: false,
       uploadList: [
@@ -207,7 +210,7 @@ export default {
         { title: '星级', key: 'starLevel' },
         {
           title: '图片',
-          key: 'handle',
+          key: 'img',
           options: ['delete'],
           render: (h, params) => {
             return h('img', {
@@ -293,8 +296,21 @@ export default {
     changeIshot () {},
     exportExcel () {
       exportStore({ idList: [1, 2] }).then(res => {
-        console.log(res)
-        // window.open(res)
+        const content = res
+        const blob = new Blob([content])
+        const fileName = '场馆.xlsx'
+        if ('download' in document.createElement('a')) { // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName
+          elink.style.display = 'none'
+          elink.href = URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else { // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
       })
       // this.$refs.tables.exportCsv({
       //   filename: `table-${(new Date()).valueOf()}.csv`
@@ -314,10 +330,14 @@ export default {
       const fileList = this.$refs.upload.fileList
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
-    handleSuccess (res, file) {
+    uploadImgSuccess (res, file) {
       console.log('图片上传 callback', res)
       file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
       file.name = '7eb99afb9d5f317c912f08b5212fd69a'
+    },
+    importStroeSuccess (res, file) {
+      console.log('导入 场馆', res, file)
+      this.init()
     },
     handleFormatError (file) {
       this.$Notice.warning({

@@ -2,6 +2,14 @@
   <div>
     <Card>
       <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
+      <Upload
+        style="display: inline-block;margin-left:20px;"
+        :show-upload-list="Boolean(false)"
+        :on-success="importCoachSuccess"
+        :format="['jpg','jpeg','png', 'xlsx']"
+        action="http://47.92.217.9:9091/rest/coach/import">
+        <Button icon="ios-cloud-upload-outline">模板导入</Button>
+      </Upload>
       <tables ref="tables"
         searchable
         search-place="top"
@@ -37,7 +45,7 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getCoachList, createCoach, deleteCoach, updateCoach } from '@/api/coach'
+import { getCoachList, createCoach, deleteCoach, updateCoach, exportCoach } from '@/api/coach'
 import { getStoreList } from '@/api/vuene'
 
 export default {
@@ -186,10 +194,31 @@ export default {
       data.storeId = this.curStoreId
       this._createCoach(data)
     },
+    importCoachSuccess (res, file) {
+      this.init()
+    },
     exportExcel () {
-      this.$refs.tables.exportCsv({
-        filename: `table-${(new Date()).valueOf()}.csv`
+      exportCoach({ idList: ['1', '2', '3'] }).then(res => {
+        console.log(res)
+        const content = res
+        const blob = new Blob([content])
+        const fileName = '教练.xlsx'
+        if ('download' in document.createElement('a')) { // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = fileName
+          elink.style.display = 'none'
+          elink.href = URL.createObjectURL(blob)
+          document.body.appendChild(elink)
+          elink.click()
+          URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else { // IE10+下载
+          navigator.msSaveBlob(blob, fileName)
+        }
       })
+      // this.$refs.tables.exportCsv({
+      //   filename: `table-${(new Date()).valueOf()}.csv`
+      // })
     },
     handleDelete (params) {
       deleteCoach({ id: params.row.id }).then(res => {

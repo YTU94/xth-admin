@@ -35,3 +35,23 @@ export const updateCoach = (data) => {
     data
   })
 }
+
+// 导出教练
+// export const exportCoach = (params) => {
+//   return axios.request({
+//     url: '/rest/coach/getExport',
+//     method: 'get',
+//     responseType: 'blob',
+//     params
+//   })
+// }
+
+// 导出教练
+export const exportCoach = (data) => {
+  return axios.request({
+    url: '/rest/coach/export',
+    method: 'post',
+    responseType: 'blob',
+    data
+  })
+}

@@ -90,7 +90,9 @@ export default {
             (h, params, vm) => {
               return [
                 h('Button', {
-                  props: {},
+                  props: {
+                    type: 'primary'
+                  },
                   style: {
                     'margin-right': '10px'
                   },
@@ -100,16 +102,18 @@ export default {
                       console.log('122222222')
                     }
                   }
-                }, '作废'),
+                }, '返利'),
                 h('Button', {
-                  props: {},
+                  props: {
+                    type: 'error'
+                  },
                   on: {
                     'click': () => {
                       vm.$emit('on-update', params)
                       console.log('122222222')
                     }
                   }
-                }, '返利')
+                }, '作废')
               ]
             }
           ]
