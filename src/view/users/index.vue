@@ -12,7 +12,7 @@
       <!-- page -->
       <Row type="flex" justify="end">
         <Col>
-          <Page :total="clientTotal" show-total />
+          <Page :total="clientTotal" :page-size="pageSize" @on-change="pageChange"  show-total />
         </Col>
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
@@ -36,6 +36,7 @@ export default {
   },
   data () {
     return {
+      pageSize: 5,
       clientTotal: 0,
       showModal: false,
       formDynamic: {
@@ -91,7 +92,7 @@ export default {
   },
   methods: {
     init () {
-      this._getClientList({ pageSize: 5, pageNumber: 1, clientSo: {} })
+      this._getClientList({ pageSize: this.pageSize, pageNumber: 1 })
     },
     // 保存
     save () {
@@ -101,6 +102,10 @@ export default {
       })
       data.type = 2
       this._createClient(JSON.stringify(data))
+    },
+    // 改变页码
+    pageChange (v) {
+      this._getClientList({ pageSize: this.pageSize, pageNumber: v })
     },
     saveEdit () {},
     deleteClient (params) {

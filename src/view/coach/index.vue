@@ -15,12 +15,12 @@
         search-place="top"
         v-model="tableData"
         :columns="columns"
-        @on-delete="handleDelete"
+        @on-delete="_deleteCoach"
         @on-save-edit="saveEdit"/>
       <!-- page -->
       <Row type="flex" justify="end">
         <Col>
-          <Page :total="storeTotal" show-total />
+          <Page :total="storeTotal" :page-size="pageSize" @on-change="pageChange" show-total />
         </Col>
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
@@ -35,6 +35,45 @@
             <Select v-model="curStoreId" style="width:200px">
               <Option v-for="(item, index) in storeList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
+          </Row>
+        </FormItem>
+        <FormItem label="图片">
+          <Row>
+            <Col span="24">
+            <div class="demo-upload-list" v-if="uploadList && uploadList.length > 0" v-for="(item, index) in uploadList" :key="index"  @mouseover="uploadImgIcon = true" @mouseout="uploadImgIcon = false">
+                <template v-if="item.status === 'finished'">
+                    <img :src="item.url">
+                    <div class="demo-upload-list-cover" v-show="uploadImgIcon" >
+                        <Icon type="ios-eye-outline"  @click.native="handleView(item.name)"></Icon>
+                    </div>
+                </template>
+                <template v-else>
+                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                </template>
+            </div>
+            <Upload
+              ref="upload"
+              :show-upload-list="false"
+              :default-file-list="defaultList"
+              :on-success="uploadImgSuccess"
+              :format="['jpg','jpeg','png']"
+              :max-size="2048"
+              :on-format-error="handleFormatError"
+              :on-exceeded-size="handleMaxSize"
+              :before-upload="handleBeforeUpload"
+              multiple
+              type="drag"
+              :data="uploadImgData"
+              action="http://47.92.217.9:9091/rest/common/uploadImg"
+              style="display: inline-block;width:58px;">
+              <div style="width: 58px;height:58px;line-height: 58px;">
+                  <Icon type="ios-camera" size="20"></Icon>
+              </div>
+            </Upload>
+            <Modal title="View Image" v-model="visible">
+              <img :src="curStoreImg" v-if="visible && curStoreImg" style="width: 100%">
+            </Modal>
+            </Col>
           </Row>
         </FormItem>
       </edit-dialog>
@@ -56,6 +95,17 @@ export default {
   },
   data () {
     return {
+      pageSize: 5,
+      // 图片
+      curCoachImg: '',
+      uploadList: [],
+      defaultList: [],
+      uploadImgData: {
+        imgType: ''
+      },
+      visible: false,
+      uploadImgIcon: false,
+
       title: '新增教练',
       curStoreId: '',
       storeList: [],
@@ -183,7 +233,7 @@ export default {
   },
   methods: {
     init () {
-      this._getCoachList({ pageSze: '1' })
+      this._getCoachList({ pageSize: this.pageSize, pageNumber: '1' })
       this._getAllStoreList({})
     },
     save () {
@@ -191,11 +241,51 @@ export default {
       this.formDynamic.items.forEach(e => {
         data[e.key] = e.value
       })
+      data.imgUrl = this.curCoachImg
       data.storeId = this.curStoreId
       this._createCoach(data)
     },
     importCoachSuccess (res, file) {
       this.init()
+    },
+    // 改变页码
+    pageChange (v) {
+      this._getCoachList({ pageSize: this.pageSize, pageNumber: v })
+    },
+    // 上传img 返回 res
+    uploadImgSuccess (res, file) {
+      console.log('图片上传 callback', res.vo)
+      this.curCoachImg = res.vo
+      this.uploadList[0] = {
+        status: 'finished',
+        url: res.vo
+      }
+      this.$forceUpdate()
+    },
+    handleView (name) {
+      // this.imgName = name
+      this.visible = true
+    },
+    handleFormatError (file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+      })
+    },
+    handleMaxSize (file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+      })
+    },
+    handleBeforeUpload () {
+      const check = this.uploadList.length < 5
+      if (!check) {
+        this.$Notice.warning({
+          title: 'Up to five pictures can be uploaded.'
+        })
+      }
+      return check
     },
     exportExcel () {
       exportCoach({ idList: ['1', '2', '3'] }).then(res => {
@@ -219,19 +309,6 @@ export default {
       // this.$refs.tables.exportCsv({
       //   filename: `table-${(new Date()).valueOf()}.csv`
       // })
-    },
-    handleDelete (params) {
-      deleteCoach({ id: params.row.id }).then(res => {
-        console.log(params, '走接口删除')
-        params.tableData.filter((item, index) => index !== params.row.initRowIndex)
-      })
-    },
-    deleteStore (params) {
-      deleteCoach({ id: params.id }).then(res => {
-        debugger
-        console.log(params, '走接口删除')
-        params.tableData.filter((item, index) => index !== params.row.initRowIndex)
-      })
     },
     saveEdit (params) {
       console.log(params, '保存编辑')
@@ -275,5 +352,5 @@ export default {
 </script>
 
 <style lang="less">
-
+@import '../../assets/style/uploadImg.less';
 </style>

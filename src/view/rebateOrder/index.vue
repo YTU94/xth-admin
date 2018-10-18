@@ -12,7 +12,7 @@
       <!-- page -->
       <Row type="flex" justify="end">
         <Col>
-          <Page :total="rebateTotal" :page-size="pageSize" show-total />
+          <Page :total="rebateTotal" :page-size="pageSize" @on-change="pageChange" show-total />
         </Col>
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     init () {
-      this._getRebateList({ pageSize: 5, pageNumber: 1, rebateSo: {} })
+      this._getRebateList({ pageSize: this.pageSize, pageNumber: 1, rebateSo: {} })
     },
     // 保存
     save () {
@@ -134,6 +134,10 @@ export default {
       })
       data.type = 2
       this._createRebate(JSON.stringify(data))
+    },
+    // 改变页码
+    pageChange (v) {
+      this._getRebateList({ pageSize: this.pageSize, pageNumber: v })
     },
     saveEdit () {},
     deleteRebate (params) {

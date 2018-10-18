@@ -12,7 +12,7 @@
       <!-- page -->
       <Row type="flex" justify="end">
         <Col>
-          <Page :total="storeTotal" show-total />
+          <Page :total="storeTotal" :page-size="pageSize" @on-change="pageChange" show-total />
         </Col>
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
@@ -78,6 +78,7 @@ export default {
   },
   data () {
     return {
+      pageSize: 5,
       COUPON_APPLY_SCOPE: COUPON_APPLY_SCOPE,
       DISCOUNT_TYPE: DISCOUNT_TYPE,
       curCouponType: '',
@@ -148,7 +149,7 @@ export default {
   },
   methods: {
     init () {
-      this._getCouponList({ pageSize: 5, pageNunber: 1 })
+      this._getCouponList({ pageSize: this.pageSize, pageNunber: 1 })
     },
     // save
     save () {
@@ -160,6 +161,10 @@ export default {
       data.type = this.curCouponType || 'RATE' // FULL_REDUCTION RATE
       data.effectTime = this.effectTime
       this._createCoupon(JSON.stringify(data))
+    },
+    // 改变页码
+    pageChange (v) {
+      this._getCouponList({ pageSize: this.pageSize, pageNumber: v })
     },
     selectApplyType (value) {
       this.applyList = []

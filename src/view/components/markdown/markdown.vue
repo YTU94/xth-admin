@@ -13,7 +13,7 @@
         <!-- page -->
       <Row type="flex" justify="end">
         <Col>
-          <Page :total="articleTotal" show-total />
+          <Page :total="articleTotal" :page-size="pageSize" @on-change="pageChange" show-total />
         </Col>
       </Row>
       <br>
@@ -22,6 +22,7 @@
           <span>标题：</span>
           <Input v-model="article.title" placeholder="Enter something..." clearable style="width: 200px" />
         </Col>
+        <br>
         <br>
         <Col span="24">
           <span>图片：</span>
@@ -60,6 +61,7 @@
           </Modal>
         </Col>
         <br>
+        <br>
         <Col span="24">
           <markdown-editor  v-model="article.content"/>
         </Col>
@@ -85,14 +87,16 @@ export default {
   },
   data () {
     return {
+      pageSize: 5,
       // 图片
       curArticleImg: '',
       uploadList: [],
       defaultList: [],
       uploadImgData: {
-        imgType: 'article'
+        imgType: ''
       },
       visible: false,
+      uploadImgIcon: false,
 
       articleTotal: 0,
       showModal: false,
@@ -171,10 +175,15 @@ export default {
       const data = {
         isHot: '',
         slug: '',
+        imgUrl: this.curArticleImg,
         title: this.article.title,
         content: this.article.content
       }
       this._createArticle(JSON.stringify(data))
+    },
+    // 改变页码
+    pageChange (v) {
+      this._getArticleList({ pageSize: this.pageSize, pageNumber: v })
     },
     // 上传img 返回 res
     uploadImgSuccess (res, file) {
@@ -185,6 +194,10 @@ export default {
         url: res.vo
       }
       this.$forceUpdate()
+    },
+    handleView (name) {
+      // this.imgName = name
+      this.visible = true
     },
     handleFormatError (file) {
       this.$Notice.warning({
@@ -245,36 +258,6 @@ export default {
 </script>
 
 <style lang="less">
-.demo-upload-list {
-    display: inline-block;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    line-height: 60px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    overflow: hidden;
-    background: #fff;
-    position: relative;
-    box-shadow: 0 1px 1px rgba(0,0,0,.2);
-    margin-right: 4px;
-}
-.demo-upload-list img {
-    width: 100%;
-    height: 100%;
-}
-.demo-upload-list-cover {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,.6);
-}
-.demo-upload-list-cover i {
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    margin: 0 2px;
-}
+@import '../../../assets/style/uploadImg.less';
+
 </style>
