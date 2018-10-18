@@ -50,7 +50,7 @@
                     <img :src="item.url">
                     <div class="demo-upload-list-cover" v-show="uploadImgIcon" >
                         <Icon type="ios-eye-outline"  @click.native="handleView(item.name)"></Icon>
-                        <Icon type="ios-trash-outline"  @click.native="handleRemove(item)"></Icon>
+                        <!-- <Icon type="ios-trash-outline"  @click.native="handleRemove(item)"></Icon> -->
                     </div>
                 </template>
                 <template v-else>
@@ -77,6 +77,7 @@
               </div>
             </Upload>
             <Modal title="View Image" v-model="visible">
+              <img :src="curStoreImg" alt="" style="width: 100%">
                 <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
             </Modal>
             </Col>
@@ -118,6 +119,8 @@ export default {
       uploadImgData: {
         imgType: 'store'
       },
+      // 新增选择的img
+      curStoreImg: '',
       importStroeData: '',
       visible: false,
       uploadImgIcon: false,
@@ -331,9 +334,11 @@ export default {
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
     uploadImgSuccess (res, file) {
-      console.log('图片上传 callback', res)
-      file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
-      file.name = '7eb99afb9d5f317c912f08b5212fd69a'
+      console.log('图片上传 callback', res.vo)
+      this.curStoreImg = res.vo
+      this.uploadList[0].url = res.vo
+      // file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar'
+      // file.name = '7eb99afb9d5f317c912f08b5212fd69a'
     },
     importStroeSuccess (res, file) {
       console.log('导入 场馆', res, file)
