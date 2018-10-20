@@ -15,6 +15,7 @@
         search-place="top"
         v-model="tableData"
         :columns="columns"
+        @on-selection-change="selectChange"
         @on-delete="_deleteCoach"
         @on-save-edit="saveEdit"/>
       <!-- page -->
@@ -106,6 +107,7 @@ export default {
       visible: false,
       uploadImgIcon: false,
 
+      selectCoachIdList: '',
       title: '新增教练',
       curStoreId: '',
       storeList: [],
@@ -167,6 +169,12 @@ export default {
         ]
       },
       columns: [
+        {
+          type: 'selection',
+          key: 'handle',
+          width: 60,
+          align: 'center'
+        },
         { title: '姓名', key: 'name', sortable: true, editable: true },
         { title: '电话', key: 'phone', editable: true },
         { title: '身份证号', key: 'idNumber', editable: true },
@@ -287,28 +295,22 @@ export default {
       }
       return check
     },
+    // table select change 表格勾选
+    selectChange (selection) {
+      this.selectCoachIdList = selection.map(e => {
+        return e.id
+      })
+    },
     exportExcel () {
-      exportCoach({ idList: ['1', '2', '3'] }).then(res => {
-        console.log(res)
-        const content = res
-        const blob = new Blob([content])
-        const fileName = '教练.xlsx'
-        if ('download' in document.createElement('a')) { // 非IE下载
-          const elink = document.createElement('a')
-          elink.download = fileName
-          elink.style.display = 'none'
-          elink.href = URL.createObjectURL(blob)
-          document.body.appendChild(elink)
-          elink.click()
-          URL.revokeObjectURL(elink.href) // 释放URL 对象
-          document.body.removeChild(elink)
-        } else { // IE10+下载
-          navigator.msSaveBlob(blob, fileName)
+      if (this.selectCoachIdList.length < 1) {
+        this.$Message.error('请选择要到处的教练')
+        return false
+      }
+      exportCoach({ idList: this.selectCoachIdList }).then(res => {
+        if (res.vo) {
+          location.href = res.vo
         }
       })
-      // this.$refs.tables.exportCsv({
-      //   filename: `table-${(new Date()).valueOf()}.csv`
-      // })
     },
     saveEdit (params) {
       console.log(params, '保存编辑')

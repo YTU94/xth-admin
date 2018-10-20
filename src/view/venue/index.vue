@@ -267,7 +267,7 @@ export default {
     init (city) {
       this._getStoreList({ pageSize: 5, pageNumber: 1 })
       if (city) {
-        this._getCityList({ pageSize: 10, pageNumber: 1, citySo: {} })
+        this._getCityList({})
       }
     },
     // save
@@ -301,22 +301,29 @@ export default {
     // check ishot
     changeIshot () {},
     exportExcel () {
+      if (this.selectStoreIdList.length < 1) {
+        this.$Message.error('请选择要到处的场馆')
+        return false
+      }
       exportStore({ idList: this.selectStoreIdList }).then(res => {
-        const content = res
-        const blob = new Blob([content])
-        const fileName = '场馆.xlsx'
-        if ('download' in document.createElement('a')) { // 非IE下载
-          const elink = document.createElement('a')
-          elink.download = fileName
-          elink.style.display = 'none'
-          elink.href = URL.createObjectURL(blob)
-          document.body.appendChild(elink)
-          elink.click()
-          URL.revokeObjectURL(elink.href) // 释放URL 对象
-          document.body.removeChild(elink)
-        } else { // IE10+下载
-          navigator.msSaveBlob(blob, fileName)
+        if (res.vo) {
+          location.href = res.vo
         }
+        // const content = res
+        // const blob = new Blob([content])
+        // const fileName = '场馆.xlsx'
+        // if ('download' in document.createElement('a')) { // 非IE下载
+        //   const elink = document.createElement('a')
+        //   elink.download = fileName
+        //   elink.style.display = 'none'
+        //   elink.href = URL.createObjectURL(blob)
+        //   document.body.appendChild(elink)
+        //   elink.click()
+        //   URL.revokeObjectURL(elink.href) // 释放URL 对象
+        //   document.body.removeChild(elink)
+        // } else { // IE10+下载
+        //   navigator.msSaveBlob(blob, fileName)
+        // }
       })
       // this.$refs.tables.exportCsv({
       //   filename: `table-${(new Date()).valueOf()}.csv`
