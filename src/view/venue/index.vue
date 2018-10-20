@@ -302,7 +302,7 @@ export default {
     changeIshot () {},
     exportExcel () {
       if (this.selectStoreIdList.length < 1) {
-        this.$Message.error('请选择要到处的场馆')
+        this.$Message.error('请选择要导出的场馆')
         return false
       }
       exportStore({ idList: this.selectStoreIdList }).then(res => {
