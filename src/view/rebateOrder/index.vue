@@ -6,8 +6,8 @@
         search-place="top"
         v-model="tableData"
         :columns="columns"
-        @on-delete="deleteCity"
-        @on-save-edit="saveEdit"/>
+        @on-pass="passRebateOrder"
+        @on-invalid="invalidRebateOrder"/>
       <!-- page -->
       <Row type="flex" justify="end">
         <Col>
@@ -15,8 +15,6 @@
         </Col>
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
-      <!-- 编辑 -->
-      <edit-dialog :showModal="showModal" :formDynamic="formDynamic"  @save="save"></edit-dialog>
     </Card>
   </div>
 </template>
@@ -24,7 +22,7 @@
 <script>
 import Tables from '_c/tables'
 import EditDialog from '_c/edit-dialog'
-import { getRebateList, createRebate, deleteRebate, updateRebate } from '@/api/rebate'
+import { getRebateList, passRebate, inactiveRebate } from '@/api/rebate'
 
 export default {
   name: 'tables_page',
@@ -36,25 +34,6 @@ export default {
     return {
       pageSize: 5,
       rebateTotal: 0,
-      showModal: false,
-      formDynamic: {
-        items: [
-          {
-            value: '',
-            key: 'name',
-            index: 1,
-            status: 1,
-            name: '名称'
-          },
-          {
-            value: '',
-            key: 'shortName',
-            index: 1,
-            status: 1,
-            name: '简称'
-          }
-        ]
-      },
       columns: [
         { title: '用户ID', key: 'clientId', sortable: true, editable: true },
         { title: '场馆', key: 'storeName', sortable: true, editable: true },
@@ -98,7 +77,7 @@ export default {
                   },
                   on: {
                     'click': () => {
-                      vm.$emit('on-update', params)
+                      vm.$emit('on-pass', params)
                       console.log('122222222')
                     }
                   }
@@ -109,7 +88,7 @@ export default {
                   },
                   on: {
                     'click': () => {
-                      vm.$emit('on-update', params)
+                      vm.$emit('on-invalid', params)
                       console.log('122222222')
                     }
                   }
@@ -126,22 +105,15 @@ export default {
     init () {
       this._getRebateList({ pageSize: this.pageSize, pageNumber: 1, rebateSo: {} })
     },
-    // 保存
-    save () {
-      let data = {}
-      this.formDynamic.items.forEach(e => {
-        data[e.key] = e.value
-      })
-      data.type = 2
-      this._createRebate(JSON.stringify(data))
-    },
     // 改变页码
     pageChange (v) {
       this._getRebateList({ pageSize: this.pageSize, pageNumber: v })
     },
-    saveEdit () {},
-    deleteRebate (params) {
-      this._deleteRebate({ id: params.row.id })
+    passRebateOrder (params) {
+      this._passRebate({ id: params.row.id })
+    },
+    invalidRebateOrder (params) {
+      this._inactiveRebate({ id: params.row.id })
     },
     exportExcel () {
       this.$refs.tables.exportCsv({
@@ -151,19 +123,13 @@ export default {
     /*
     * api func
     */
-    _createRebate (data) {
-      createRebate(data).then(res => {
+    _inactiveRebate (data) {
+      inactiveRebate(data).then(res => {
         this.init()
-        this.showModal = false
       })
     },
-    _updateRebate (data) {
-      updateRebate(data).then(res => {
-        console.log(res)
-      })
-    },
-    _deleteRebate (params) {
-      deleteRebate(params).then(res => {
+    _passRebate (params) {
+      passRebate(params).then(res => {
         this.init()
       })
     },
@@ -171,7 +137,7 @@ export default {
       getRebateList(data).then(res => {
         console.log(res)
         res.pageList.list.forEach(e => {
-          e.statusName = e.status === 'SUBMITED' ? '已提交' : '已返利'
+          e.statusName = e.status === 'SUBMITED' ? '已提交' : (e.status === 'INACTIVE' ? '已作废' : '已返利')
         })
         this.tableData = res.pageList.list
         this.rebateTotal = res.pageList.count

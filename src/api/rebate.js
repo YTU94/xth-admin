@@ -34,3 +34,21 @@ export const updateRebate = (data) => {
     data
   })
 }
+
+// 作废返利订单
+export const inactiveRebate = (params) => {
+  return axios.request({
+    url: '/rest/rebate/inactive',
+    method: 'get',
+    params
+  })
+}
+
+// 跟新返利订单
+export const passRebate = (params) => {
+  return axios.request({
+    url: '/rest/rebate/pass',
+    method: 'get',
+    params
+  })
+}
