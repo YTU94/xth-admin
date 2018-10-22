@@ -17,7 +17,7 @@
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
       <!-- 编辑 -->
-      <edit-dialog :showModal="showModal" :formDynamic="formDynamic"  @save="save"></edit-dialog>
+      <edit-dialog :showModal="showModal" :formDynamic="formDynamic" @save="save" @cancel="cancel"></edit-dialog>
     </Card>
   </div>
 </template>
@@ -107,6 +107,10 @@ export default {
       })
       data.type = 2
       this._createCity(JSON.stringify(data))
+    },
+    // 关闭dialog
+    cancel () {
+      this.showModal = false
     },
     // 改变页码
     pageChange (v) {

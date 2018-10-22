@@ -17,24 +17,39 @@
 
 <script>
 import LoginForm from '_c/login-form'
+import { getSessionId, login } from '@/api/user'
 import { mapActions } from 'vuex'
 export default {
   components: {
     LoginForm
   },
+
   methods: {
     ...mapActions([
       'handleLogin',
       'getUserInfo'
     ]),
     handleSubmit ({ userName, password }) {
-      this.handleLogin({ userName, password }).then(res => {
-        this.getUserInfo().then(res => {
+      console.log(userName, password)
+      const data = {
+        loginName: userName,
+        password
+      }
+      getSessionId().then(res => {
+        localStorage.setItem('token', res.vo)
+        login(data).then(ress => {
           this.$router.push({
             name: 'home'
           })
         })
       })
+      // this.handleLogin({ userName, password }).then(res => {
+      //   this.getUserInfo().then(res => {
+      //     this.$router.push({
+      //       name: 'home'
+      //     })
+      //   })
+      // })
     }
   }
 }

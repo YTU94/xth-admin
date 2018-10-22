@@ -12,7 +12,7 @@
             :key="index"
             :label="item.name"
             :prop="'items.' + index + '.value'"
-            :rules="{required: true, message: 'Item ' + item.index +' can not be empty', trigger: 'blur'}">
+            :rules="{required: true, message: item.name +'不能为空', trigger: 'blur'}">
           <Row>
             <Col span="24">
               <Input type="text" v-model="item.value" placeholder="Enter something..."></Input>

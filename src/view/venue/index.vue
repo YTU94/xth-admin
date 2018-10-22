@@ -15,7 +15,7 @@
         :value="tableData"
         :columns="columns"
         @on-selection-change="selectChange"
-        @on-update="update"
+        @on-update="goUpdateStore"
         @on-delete="_deleteStore"
         @on-save-edit="saveEdit"/>
       <!-- page -->
@@ -106,6 +106,7 @@ export default {
     return {
       pageSize: 5,
       tableData: [],
+      dialogType: '',
       title: '新增场馆',
       defaultList: [
         {
@@ -118,6 +119,7 @@ export default {
       uploadImgData: {
         imgType: 'store'
       },
+      curStoreData: '',
       // 新增选择的img
       curStoreImg: '',
       // 选择门店id list
@@ -246,16 +248,15 @@ export default {
                       vm.$emit('on-delete', params)
                     }
                   }
-                })
-                // h('Button', {
-                //   props: {},
-                //   on: {
-                //     'click': () => {
-                //       vm.$emit('on-update', params)
-                //       console.log('122222222')
-                //     }
-                //   }
-                // }, '编辑')
+                }),
+                h('Button', {
+                  props: {},
+                  on: {
+                    'click': () => {
+                      vm.$emit('on-update', params)
+                    }
+                  }
+                }, '编辑')
               ]
             }
           ]
@@ -279,8 +280,16 @@ export default {
       data.imgUrl = this.curStoreImg
       data.discountType = 'RATE' //
       data.cityId = this.selectCityId || 0
-      this._createStore(data)
+      if (this.dialogType === 'update') {
+        data.id = this.curStoreData.id
+        data.lockVersion = this.curStoreData.lockVersion
+        console.log(JSON.stringify(data))
+        this._updateStore(data)
+      } else {
+        this._createStore(data)
+      }
     },
+    // 关闭dialog
     cancel () {
       this.showModal = false
     },
@@ -309,29 +318,10 @@ export default {
         if (res.vo) {
           location.href = res.vo
         }
-        // const content = res
-        // const blob = new Blob([content])
-        // const fileName = '场馆.xlsx'
-        // if ('download' in document.createElement('a')) { // 非IE下载
-        //   const elink = document.createElement('a')
-        //   elink.download = fileName
-        //   elink.style.display = 'none'
-        //   elink.href = URL.createObjectURL(blob)
-        //   document.body.appendChild(elink)
-        //   elink.click()
-        //   URL.revokeObjectURL(elink.href) // 释放URL 对象
-        //   document.body.removeChild(elink)
-        // } else { // IE10+下载
-        //   navigator.msSaveBlob(blob, fileName)
-        // }
       })
-      // this.$refs.tables.exportCsv({
-      //   filename: `table-${(new Date()).valueOf()}.csv`
-      // })
     },
     saveEdit (params) {
       console.log(params, '保存编辑')
-      // params.row.name = params.column.name
     },
     // 图片管理
     handleView (name) {
@@ -378,6 +368,16 @@ export default {
       }
       return check
     },
+    // 编辑场馆
+    goUpdateStore (params) {
+      this.showModal = true
+      this.dialogType = 'update'
+      this.curStoreData = params.row
+      this.formDynamic.items.forEach(e => {
+        e.value = params.row[e.key]
+      })
+      console.log(this.formDynamic.items)
+    },
     /*
     * api func
     */
@@ -389,7 +389,8 @@ export default {
     },
     _updateStore (data) {
       updateStore(data).then(res => {
-        console.log(res)
+        this.init()
+        this.showModal = false
       })
     },
     _deleteStore (params) {

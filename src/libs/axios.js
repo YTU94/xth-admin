@@ -1,4 +1,5 @@
 import axios from 'axios'
+// import { Message } from 'iview'
 // import { Spin } from 'iview'
 class HttpRequest {
   constructor (baseUrl = baseURL) {
@@ -24,6 +25,10 @@ class HttpRequest {
   interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
+      // 添加token获取
+      if (localStorage.getItem('token')) {
+        config.headers.XToken = localStorage.getItem('token')
+      }
       // 添加全局的loading...
       if (!Object.keys(this.queue).length) {
         // Spin.show() // 不建议开启，因为界面不友好
@@ -38,6 +43,16 @@ class HttpRequest {
       this.destroy(url)
       // const { data, status } = res
       return res.data
+
+      // if (res.data.success) {
+      //   return res.data
+      // } else {
+      // if (res.config.method === 'get' || res.config.method === 'post') {
+      //   Message.error(res.data.message)
+      // }
+      // this.$Message.error(res.data.message || '系统出错')
+      // return Promise.reject(new Error(res.data.message))
+      // }
     }, error => {
       this.destroy(url)
       return Promise.reject(error)

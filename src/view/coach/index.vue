@@ -16,6 +16,7 @@
         v-model="tableData"
         :columns="columns"
         @on-selection-change="selectChange"
+        @on-update="goUpdateCoach"
         @on-delete="_deleteCoach"
         @on-save-edit="saveEdit"/>
       <!-- page -->
@@ -30,7 +31,8 @@
         :title="title"
         :showModal="showModal"
         :formDynamic="formDynamic"
-        @save="save">
+        @save="save"
+        @cancel="cancel">
         <FormItem label="场馆">
           <Row>
             <Select v-model="curStoreId" style="width:200px">
@@ -97,6 +99,8 @@ export default {
   data () {
     return {
       pageSize: 5,
+      dialogType: '',
+      curCoachData: '',
       // 图片
       curCoachImg: '',
       uploadList: [],
@@ -221,16 +225,15 @@ export default {
                       vm.$emit('on-delete', params)
                     }
                   }
-                })
-                // h('Button', {
-                //   props: {},
-                //   on: {
-                //     'click': () => {
-                //       vm.$emit('on-update', params)
-                //       console.log('122222222')
-                //     }
-                //   }
-                // }, '编辑')
+                }),
+                h('Button', {
+                  props: {},
+                  on: {
+                    'click': () => {
+                      vm.$emit('on-update', params)
+                    }
+                  }
+                }, '编辑')
               ]
             }
           ]
@@ -251,10 +254,20 @@ export default {
       })
       data.imgUrl = this.curCoachImg
       data.storeId = this.curStoreId
-      this._createCoach(data)
+      if (this.dialogType === 'update') {
+        data.id = this.curCoachData.id
+        data.lockVersion = this.curCoachData.lockVersion
+        this._updateCoach(data)
+      } else {
+        this._createCoach(data)
+      }
     },
     importCoachSuccess (res, file) {
       this.init()
+    },
+    // 关闭dialog
+    cancel () {
+      this.showModal = false
     },
     // 改变页码
     pageChange (v) {
@@ -316,6 +329,15 @@ export default {
       console.log(params, '保存编辑')
       params.row.name = params.column.name
     },
+    goUpdateCoach (params) {
+      this.showModal = true
+      this.dialogType = 'update'
+      this.curCoachData = params.row
+      this.formDynamic.items.forEach(e => {
+        e.value = params.row[e.key]
+      })
+      console.log(this.formDynamic.items)
+    },
     /*
     * api func
     */
@@ -332,7 +354,8 @@ export default {
     },
     _updateCoach (data) {
       updateCoach(data).then(res => {
-        console.log(res)
+        this.init()
+        this.showModal = false
       })
     },
     _deleteCoach (params) {

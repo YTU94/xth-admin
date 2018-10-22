@@ -18,7 +18,7 @@
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
       <!-- 编辑 -->
 
-      <edit-dialog :showModal="showModal" :formDynamic="formDynamic" @save="save">
+      <edit-dialog :showModal="showModal" :formDynamic="formDynamic" @save="save" @cancel="cancel">
         <FormItem label="适用范围类型">
           <Row>
             <Select v-model="curCouponApplyType" @on-change="selectApplyType" style="width:200px">
@@ -161,6 +161,10 @@ export default {
       data.type = this.curCouponType || 'RATE' // FULL_REDUCTION RATE
       data.effectTime = this.effectTime
       this._createCoupon(JSON.stringify(data))
+    },
+    // 关闭dialog
+    cancel () {
+      this.showModal = false
     },
     // 改变页码
     pageChange (v) {
