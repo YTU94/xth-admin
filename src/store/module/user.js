@@ -1,12 +1,12 @@
 import { login, logout } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+// import { getToken } from '@/libs/util'
 
 export default {
   state: {
     userName: '',
     userId: '',
     avatorImgPath: '',
-    token: getToken(),
+    token: '',
     access: ''
   },
   mutations: {
@@ -24,7 +24,7 @@ export default {
     },
     setToken (state, token) {
       state.token = token
-      setToken(token)
+      // setToken(token)
     }
   },
   actions: {

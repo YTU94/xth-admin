@@ -37,14 +37,16 @@ export default {
       getSessionId().then(res => {
         localStorage.setItem('token', res.vo)
         login(data).then(res => {
-          this.$router.push({
-            name: 'home'
-          })
+          if (res.success) {
+            this.$router.push({
+              name: 'home'
+            })
+          } else if (res.message) {
+            this.$Message.error(res.message)
+          }
         }).catch(error => {
           console.log(error)
-          this.$router.push({
-            name: 'home'
-          })
+          this.$Message.error('error')
         })
       })
       // this.handleLogin({ userName, password }).then(res => {

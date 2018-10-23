@@ -27,7 +27,7 @@ class HttpRequest {
     instance.interceptors.request.use(config => {
       // 添加token获取
       if (localStorage.getItem('token')) {
-        config.headers.XToken = localStorage.getItem('token')
+        config.headers['Authorization'] = localStorage.getItem('token')
       }
       // 添加全局的loading...
       if (!Object.keys(this.queue).length) {
