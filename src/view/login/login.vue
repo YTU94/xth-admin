@@ -26,8 +26,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'handleLogin',
-      'getUserInfo'
+      'handleLogin'
     ]),
     handleSubmit ({ userName, password }) {
       console.log(userName, password)
@@ -37,7 +36,12 @@ export default {
       }
       getSessionId().then(res => {
         localStorage.setItem('token', res.vo)
-        login(data).then(ress => {
+        login(data).then(res => {
+          this.$router.push({
+            name: 'home'
+          })
+        }).catch(error => {
+          console.log(error)
           this.$router.push({
             name: 'home'
           })

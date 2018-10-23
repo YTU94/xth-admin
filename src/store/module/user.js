@@ -1,4 +1,4 @@
-import { login, logout, getUserInfo } from '@/api/user'
+import { login, logout } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
 
 export default {
@@ -58,21 +58,21 @@ export default {
         // commit('setAccess', [])
         // resolve()
       })
-    },
-    // 获取用户相关信息
-    getUserInfo ({ state, commit }) {
-      return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(res => {
-          const data = res || {}
-          commit('setAvator', data.avator)
-          commit('setUserName', data.user_name)
-          commit('setUserId', data.user_id)
-          commit('setAccess', data.access)
-          resolve(data)
-        }).catch(err => {
-          reject(err)
-        })
-      })
     }
+    // 获取用户相关信息
+    // getUserInfo ({ state, commit }) {
+    //   return new Promise((resolve, reject) => {
+    //     getUserInfo(state.token).then(res => {
+    //       const data = res || {}
+    //       commit('setAvator', data.avator)
+    //       commit('setUserName', data.user_name)
+    //       commit('setUserId', data.user_id)
+    //       commit('setAccess', data.access)
+    //       resolve(data)
+    //     }).catch(err => {
+    //       reject(err)
+    //     })
+    //   })
+    // }
   }
 }

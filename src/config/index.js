@@ -14,7 +14,7 @@ export default {
    */
   baseUrl: {
     dev: 'http://47.92.217.9:9091',
-    pro: 'https://produce.com'
+    pro: 'http://47.92.217.9:9091'
   }
 }
 
