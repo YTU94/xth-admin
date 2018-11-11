@@ -7,6 +7,7 @@
         v-model="tableData"
         :columns="columns"
         @on-pass="passRebateOrder"
+        @on-showImg="showImg"
         @on-invalid="invalidRebateOrder"/>
       <!-- page -->
       <Row type="flex" justify="end">
@@ -16,6 +17,9 @@
       </Row>
       <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>
     </Card>
+    <Modal title="图片" v-model="showModal">
+      <img :src="curImgUrl" alt="" width="100%" height="auto">
+    </Modal>
   </div>
 </template>
 
@@ -32,19 +36,21 @@ export default {
   },
   data () {
     return {
+      showModal: false,
+      curImgUrl: '',
       pageSize: 5,
       rebateTotal: 0,
       columns: [
-        { title: '用户ID', key: 'clientId', sortable: true, editable: true },
-        { title: '场馆', key: 'storeName', sortable: true, editable: true },
+        { title: '用户ID', key: 'clientId', editable: true },
+        { title: '场馆', key: 'storeName', editable: true },
         { title: '总金额', key: 'consumeMoney', editable: true },
         { title: '返利金额', key: 'returnMoney', editable: true },
         { title: '状态', key: 'statusName', editable: true },
         {
           title: '凭证',
-          key: 'img',
-          options: ['delete'],
-          render: (h, params) => {
+          key: 'handle',
+          // options: ['delete'],
+          button: (h, params, vm) => {
             return h('img', {
               attrs: {
                 src: params.row.attachment || 'https://secure.gravatar.com/avatar/5e549e9992e2f6a350efd704e9d56036?s=50&r=pg&d=https%3A%2F%2Fdeveloper.mozilla.org%2Fstatic%2Fimg%2Favatar.png'
@@ -55,7 +61,7 @@ export default {
               },
               on: {
                 'click': () => {
-                  console.log(params)
+                  vm.$emit('on-showImg', params)
                 }
               }
             }, '编辑')
@@ -104,6 +110,11 @@ export default {
   methods: {
     init () {
       this._getRebateList({ pageSize: this.pageSize, pageNumber: 1, rebateSo: {} })
+    },
+    showImg (params) {
+      this.showModal = true
+      this.curImgUrl = params.row.attachment || 'https://secure.gravatar.com/avatar/5e549e9992e2f6a350efd704e9d56036?s=50&r=pg&d=https%3A%2F%2Fdeveloper.mozilla.org%2Fstatic%2Fimg%2Favatar.png'
+      console.log(params)
     },
     // 改变页码
     pageChange (v) {

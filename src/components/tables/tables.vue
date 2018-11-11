@@ -213,7 +213,7 @@ export default {
     },
     handleSearch () {
       try {
-        this.insideTableData = this.value.filter(item => item[this.searchKey].indexOf(this.searchValue) > -1)
+        this.insideTableData = this.value.filter(item => String(item[this.searchKey]).indexOf(this.searchValue) > -1)
       } catch (error) {
         console.log(error)
       }

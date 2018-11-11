@@ -1,6 +1,6 @@
 <template>
     <Modal
-      v-model="showModal"
+      v-model="modalValue"
       :title="title"
       :footer-hide="Boolean(true)"
       @on-ok="ok"
@@ -46,6 +46,14 @@ export default {
     }
   },
   computed: {
+    modalValue: {
+      set (v) {
+        console.log(v)
+      },
+      get () {
+        return this.showModal
+      }
+    },
     dsiabled () {
       return false
       // this.$refs.formDynamic.validate((valid) => {
@@ -62,6 +70,7 @@ export default {
   },
   methods: {
     ok () {
+      console.log('do ok')
       this.$refs.formDynamic.validate((valid) => {
         if (valid) {
           this.$emit('save', this.formDynamic)
@@ -76,9 +85,9 @@ export default {
     },
 
     handleSubmit (name) {
+      console.log('do handlesubmit')
       this.$refs[name].validate((valid) => {
         if (valid) {
-          this.$Message.success('Success!')
           this.$emit('save', this.formDynamic)
         } else {
           this.$Message.error('Fail!')

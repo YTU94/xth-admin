@@ -28,7 +28,7 @@
         </FormItem>
         <FormItem label="适用范围内容">
           <Row>
-            <Select v-model="curApply" style="width:200px">
+            <Select v-model="curApply" filterable style="width:200px">
               <Option v-if="applyList && applyList.length > 0" v-for="(item, index) in applyList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </Row>
@@ -157,6 +157,11 @@ export default {
       this.formDynamic.items.forEach(e => {
         data[e.key] = e.value
       })
+      debugger
+      if (typeof (this.formDynamic.items[1].value) !== 'number') {
+        this.$Message.error('内容需为数字')
+        return
+      }
       data.applyCityId = 1
       data.type = this.curCouponType || 'RATE' // FULL_REDUCTION RATE
       data.effectTime = this.effectTime
