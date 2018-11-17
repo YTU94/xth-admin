@@ -63,29 +63,29 @@ export default {
         { title: '手机号', key: 'mobile' },
         { title: 'openId', key: 'openId' },
         { title: '创建时间', key: 'createdTimeDate' },
-        { title: '最后一次登陆时间', key: 'lastLoginTimeDate' },
-        {
-          title: '操作',
-          key: 'handle',
-          options: ['delete'],
-          button: [
-            (h, params, vm) => {
-              return [
-                h('Poptip', {
-                  props: {
-                    confirm: true,
-                    title: '你确定要删除吗?'
-                  },
-                  on: {
-                    'on-ok': () => {
-                      vm.$emit('on-delete', params)
-                    }
-                  }
-                })
-              ]
-            }
-          ]
-        }
+        { title: '最后一次登陆时间', key: 'lastLoginTimeDate' }
+        // {
+        //   title: '操作',
+        //   key: 'handle',
+        //   options: ['delete'],
+        //   button: [
+        //     (h, params, vm) => {
+        //       return [
+        //         h('Poptip', {
+        //           props: {
+        //             confirm: true,
+        //             title: '你确定要删除吗?'
+        //           },
+        //           on: {
+        //             'on-ok': () => {
+        //               vm.$emit('on-delete', params)
+        //             }
+        //           }
+        //         })
+        //       ]
+        //     }
+        //   ]
+        // }
       ],
       tableData: []
     }

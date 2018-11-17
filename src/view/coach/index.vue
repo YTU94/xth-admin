@@ -378,11 +378,13 @@ export default {
     },
     _getCoachList (data) {
       getCoachList(data).then(res => {
-        res.pageList.list.forEach(e => {
-          e.storeName = e.storeVo.name
-        })
         this.tableData = res.pageList.list
         this.storeTotal = res.pageList.count
+        res.pageList.list.forEach(e => {
+          if (e.storeVo) {
+            e.storeName = e.storeVo.name
+          }
+        })
       })
     }
   },
