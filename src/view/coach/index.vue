@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
+      <Button style="margin: 10px 0;" type="primary" @click="newCoach">新增</Button>
       <Upload
         style="display: inline-block;margin-left:20px;"
         :show-upload-list="Boolean(false)"
@@ -246,6 +246,13 @@ export default {
     init () {
       this._getCoachList({ pageSize: this.pageSize, pageNumber: '1' })
       this._getAllStoreList({})
+    },
+    // 新增
+    newCoach () {
+      this.formDynamic.items.forEach(e => {
+        e.value = ''
+      })
+      this.showModal = true
     },
     save () {
       const data = {}

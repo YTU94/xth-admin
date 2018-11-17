@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import { Message } from 'iview'
+import { Message } from 'iview'
 // import { Spin } from 'iview'
 class HttpRequest {
   constructor (baseUrl = baseURL) {
@@ -41,8 +41,14 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       this.destroy(url)
+      if (res.data.success) {
+        return res.data
+      } else {
+        Message.error(res.data.message)
+        return Promise.reject(res)
+      }
       // const { data, status } = res
-      return res.data
+      // return res.data
 
       // if (res.data.success) {
       //   return res.data

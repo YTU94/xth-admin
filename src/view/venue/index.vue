@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增</Button>
+      <Button style="margin: 10px 0;" type="primary" @click="newStore">新增</Button>
       <Upload
         style="display: inline-block;margin-left:20px;"
         :show-upload-list="Boolean(false)"
@@ -40,7 +40,7 @@
           </Row>
         </FormItem>
         <FormItem label="是否热门">
-              <i-switch v-model="switch1" @on-change="changeIshot" />
+              <i-switch v-model="isHot" @on-change="changeIshot" />
         </FormItem>
         <FormItem label="图片">
           <Row>
@@ -176,7 +176,7 @@ export default {
             name: '星级'
           },
           {
-            value: '100',
+            value: '',
             key: 'inStuNums',
             index: 1,
             status: 1,
@@ -187,11 +187,25 @@ export default {
             key: 'starLevel',
             index: 1,
             status: 1,
-            name: '折扣百分比'
+            name: '星级'
+          },
+          {
+            value: '100',
+            key: 'longitude',
+            index: 1,
+            status: 1,
+            name: '经度'
+          },
+          {
+            value: '100',
+            key: 'latitude',
+            index: 1,
+            status: 1,
+            name: '纬度'
           }
         ]
       },
-      switch1: false,
+      isHot: false,
       columns: [
         {
           type: 'selection',
@@ -203,10 +217,10 @@ export default {
         { title: '返利', key: 'discountContentMessage' },
         { title: '联系人姓名', key: 'contactName' },
         { title: '联系人电话', key: 'contactPhone' },
-        { title: '城市', key: 'city' },
+        { title: '城市', key: 'cityName' },
         { title: '地址', key: 'address' },
         { title: '在馆学员人数', key: 'inStuNums' },
-        { title: '热门度', key: 'hotLevel' },
+        { title: '热门', key: 'isHotName' },
         { title: '星级', key: 'starLevel' },
         {
           title: '图片',
@@ -271,19 +285,27 @@ export default {
         this._getCityList({})
       }
     },
+    // 新增
+    newStore () {
+      this.dialogType = 'create'
+      this.formDynamic.items.forEach(e => {
+        e.value = ''
+      })
+      this.showModal = true
+    },
     // save
     save () {
       let data = {}
       this.formDynamic.items.forEach(e => {
         data[e.key] = e.value
       })
+      data.isHot = this.isHot
       data.imgUrl = this.curStoreImg
       data.discountType = 'RATE' //
       data.cityId = this.selectCityId || 0
       if (this.dialogType === 'update') {
         data.id = this.curStoreData.id
         data.lockVersion = this.curStoreData.lockVersion
-        console.log(JSON.stringify(data))
         this._updateStore(data)
       } else {
         this._createStore(data)
@@ -308,7 +330,10 @@ export default {
       })
     },
     // check ishot
-    changeIshot () {},
+    changeIshot (v) {
+      this.isHot = v
+      console.log(this.isHot)
+    },
     exportExcel () {
       if (this.selectStoreIdList.length < 1) {
         this.$Message.error('请选择要导出的场馆')
@@ -370,12 +395,16 @@ export default {
     },
     // 编辑场馆
     goUpdateStore (params) {
-      this.showModal = true
       this.dialogType = 'update'
+      this.showModal = true
       this.curStoreData = params.row
       this.formDynamic.items.forEach(e => {
         e.value = params.row[e.key]
       })
+      this.uploadList[0] = {
+        status: 'finished',
+        url: params.row.imgUrl
+      }
       console.log(this.formDynamic.items)
     },
     /*
@@ -400,6 +429,12 @@ export default {
     },
     _getStoreList (data) {
       getStoreList(data).then(res => {
+        res.pageList.list.forEach(e => {
+          if (e.inStuNums) {
+            e.inStuNums = String(e.inStuNums)
+          }
+          e.isHotName = e.isHot ? '是' : '否'
+        })
         this.tableData = res.pageList.list
         this.storeTotal = res.pageList.count
       })

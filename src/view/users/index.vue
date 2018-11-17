@@ -59,7 +59,7 @@ export default {
       },
       columns: [
         { title: '客户ID', key: 'id', sortable: true },
-        { title: '昵称', key: 'nickname' },
+        // { title: '昵称', key: 'nickname' },
         { title: '手机号', key: 'mobile' },
         { title: 'openId', key: 'openId' },
         { title: '创建时间', key: 'createdTimeDate' },

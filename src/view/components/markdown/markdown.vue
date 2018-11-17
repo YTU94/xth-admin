@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <Button style="margin: 10px 0;" type="primary" @click="showModal = true">新增文章</Button>
+      <Button style="margin: 10px 0;" type="primary" @click="newArticle">新增文章</Button>
       <tables ref="tables"
         searchable
         search-place="top"
@@ -21,6 +21,12 @@
         <Col span="24">
           <span>标题：</span>
           <Input v-model="article.title" placeholder="Enter something..." clearable style="width: 200px" />
+        </Col>
+        <br>
+        <br>
+        <Col span="24">
+          <span>作者：</span>
+          <Input v-model="article.author" placeholder="Enter something..." clearable style="width: 200px" />
         </Col>
         <br>
         <br>
@@ -63,7 +69,7 @@
         <br>
         <br>
         <Col span="24">
-          <markdown-editor  v-model="article.content"/>
+          <markdown-editor  v-model="article.content" :localCache="false"/>
         </Col>
         <Button style="margin: 10px 0;" type="default" @click="showModal = false">取消</Button>
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -100,8 +106,10 @@ export default {
 
       articleTotal: 0,
       showModal: false,
+      isEditing: false,
       article: {
         title: '',
+        author: '',
         content: ''
       },
       columns: [
@@ -170,6 +178,7 @@ export default {
       }
       this._getArticleList(data)
     },
+
     save () {
       this.showModal = false
       const data = {
@@ -220,12 +229,22 @@ export default {
       }
       return check
     },
+    // 新增文章
+    newArticle () {
+      this.isEditing = false
+      this.article.title = ''
+      this.article.author = ''
+      this.article.content = ''
+      this.showModal = true
+    },
     // 删除文章
     deleteHandle (params) {
       this._deleteArticle({ id: params.row.id })
     },
     // 更新文章
     updateHandle (params) {
+      this.isEditing = true
+      this.article = { title: params.row.title, author: params.row.author, content: params.row.content }
       this.showModal = true
     },
     /*
