@@ -51,7 +51,6 @@ export const exportCoach = (data) => {
   return axios.request({
     url: '/rest/coach/export',
     method: 'post',
-    responseType: 'blob',
     data
   })
 }
