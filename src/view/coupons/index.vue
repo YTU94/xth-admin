@@ -26,22 +26,26 @@
             </Select>
           </Row>
         </FormItem>
-        <!-- <FormItem label="折扣" v-show="curCouponType === 'RATE'">
+        <FormItem label="折扣" v-show="curCouponType === 'RATE'">
           <Row>
-            <InputNumber
+            <input class="form-input" v-model="rateContentList[1]" type="number"></input>
+
+            <!-- <InputNumber
             :max="100"
             v-model="rateContent"
             :formatter="value => `${value}%`"
-            :parser="value => value.replace('%', '')"></InputNumber>
+            :parser="value => value.replace('%', '')"></InputNumber> -->
           </Row>
         </FormItem>
         <FormItem label="满" v-show="curCouponType === 'FULL_REDUCTION'">
           <Row>
-            <InputNumber v-model="rateContentList[0]"></InputNumber>
+            <input class="form-input" v-model="rateContentList[0]" type="number"></input>
+            <!-- <InpuNumber ></InpuNumber> -->
             <span> 减 </span>
-            <InputNumber v-model="rateContentList[1]"></InputNumber>
+            <input class="form-input" v-model="rateContentList[1]" type="number"></input>
+            <!-- <InputNumber v-model="rateContentList[1]"></InputNumber> -->
           </Row>
-        </FormItem> -->
+        </FormItem>
         <FormItem label="适用范围类型">
           <Row>
             <Select v-model="curCouponApplyType" @on-change="selectApplyType" style="width:200px">
@@ -275,5 +279,18 @@ export default {
 </script>
 
 <style lang="less">
-
+.form-input{
+  display: inline-block;
+  width: 100px;
+  height: 32px;
+  line-height: 1.5;
+  padding: 4px 7px;
+  font-size: 12px;
+  border: 1px solid #dcdee2;
+  border-radius: 4px;
+  color: #515a6e;
+  background-color: #fff;
+  background-image: none;
+  position: relative;
+}
 </style>

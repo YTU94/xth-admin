@@ -340,8 +340,9 @@ export default {
         return false
       }
       exportStore({ idList: this.selectStoreIdList }).then(res => {
+        console.log('下载地址', res.vo)
         if (res.vo) {
-          location.href = res.vo
+          window.location.href = res.vo
         }
       })
     },
