@@ -19,6 +19,29 @@
       <!-- 编辑 -->
 
       <edit-dialog :showModal="showModal" :formDynamic="formDynamic" @save="save" @cancel="cancel">
+        <FormItem label="优惠类型">
+          <Row>
+            <Select v-model="curCouponType" style="width:200px">
+              <Option v-for="(item, index) in DISCOUNT_TYPE" :value="item.value" :key="index">{{ item.label }}</Option>
+            </Select>
+          </Row>
+        </FormItem>
+        <!-- <FormItem label="折扣" v-show="curCouponType === 'RATE'">
+          <Row>
+            <InputNumber
+            :max="100"
+            v-model="rateContent"
+            :formatter="value => `${value}%`"
+            :parser="value => value.replace('%', '')"></InputNumber>
+          </Row>
+        </FormItem>
+        <FormItem label="满" v-show="curCouponType === 'FULL_REDUCTION'">
+          <Row>
+            <InputNumber v-model="rateContentList[0]"></InputNumber>
+            <span> 减 </span>
+            <InputNumber v-model="rateContentList[1]"></InputNumber>
+          </Row>
+        </FormItem> -->
         <FormItem label="适用范围类型">
           <Row>
             <Select v-model="curCouponApplyType" @on-change="selectApplyType" style="width:200px">
@@ -33,18 +56,11 @@
             </Select>
           </Row>
         </FormItem>
-        <FormItem label="优惠类型">
-          <Row>
-            <Select v-model="curCouponType" style="width:200px">
-              <Option v-for="(item, index) in DISCOUNT_TYPE" :value="item.value" :key="index">{{ item.label }}</Option>
-            </Select>
-          </Row>
 
-        </FormItem>
         <FormItem label="有效截止时间">
           <Row>
             <Col span="4">
-              <DatePicker type="date" :value="effectTime" placeholder="Select date" style="width: 200px"></DatePicker>
+              <DatePicker type="date" @on-change="changeDate" placeholder="Select date" style="width: 200px"></DatePicker>
             </Col>
           </Row>
         </FormItem>
@@ -61,6 +77,7 @@ import { getCouponList, createCoupon, deleteCoupon, updateCoupon } from '@/api/c
 import { uploadImg } from '@/api/common'
 import { getStoreList } from '@/api/vuene'
 import { getCityList } from '@/api/city'
+import { getDate } from '@/libs/tools.js'
 
 const COUPON_APPLY_SCOPE = [ // eslint-disable-line
   { label: '城市', value: 'CITY' },
@@ -84,10 +101,13 @@ export default {
       curCouponType: '',
       curCouponApplyType: '',
       curApply: '', // 选择的城市或场馆
+      curApplyType: '',
       applyList: '', // 城市或场馆列表
       storeTotal: 0,
       effectTime: '',
       showModal: false,
+      rateContentList: [0, 0],
+      rateContent: '', // 折扣内容
       formDynamic: {
         items: [
           {
@@ -96,21 +116,21 @@ export default {
             index: 1,
             status: 1,
             name: '名称'
-          },
-          {
-            value: '',
-            key: 'content',
-            index: 1,
-            status: 1,
-            name: '内容'
           }
+          // {
+          //   value: '',
+          //   key: 'content',
+          //   index: 1,
+          //   status: 1,
+          //   name: '内容'
+          // }
         ]
       },
       columns: [
         { title: '名称', key: 'name', sortable: true, editable: true },
         { title: '内容', key: 'content', editable: true },
         { title: '使用范围', key: 'applyScopeContent', editable: true },
-        { title: '截止时间', key: 'effectTime', editable: true },
+        { title: '截止时间', key: 'effectTimeFormat', editable: true },
         { title: '类型', key: 'type', editable: true },
         {
           title: '操作',
@@ -148,6 +168,10 @@ export default {
     }
   },
   methods: {
+    changeDate (v, d) {
+      const a = new Date(v)
+      this.effectTime = a.getTime()
+    },
     init () {
       this._getCouponList({ pageSize: this.pageSize, pageNunber: 1 })
     },
@@ -155,14 +179,10 @@ export default {
     save () {
       let data = {}
       this.formDynamic.items.forEach(e => {
-        data[e.key] = e.value
+        e.value = ''
       })
-      debugger
-      if (typeof (this.formDynamic.items[1].value) !== 'number') {
-        this.$Message.error('内容需为数字')
-        return
-      }
-      data.applyCityId = 1
+      data.content = this.curCouponType === 'RATE' ? this.rateContent : `${this.rateContentList[0]}|${this.rateContentList[1]}`
+      data[this.curApplyType] = this.curApply
       data.type = this.curCouponType || 'RATE' // FULL_REDUCTION RATE
       data.effectTime = this.effectTime
       this._createCoupon(JSON.stringify(data))
@@ -179,10 +199,12 @@ export default {
       this.applyList = []
       this.curApply = ''
       if (value === 'CITY') {
+        this.curApplyType = 'applyCityId'
         getCityList({}).then(res => {
           this.applyList = res.pageList.list
         })
       } else if (value === 'STORE') {
+        this.curApplyType = 'applyStoreId'
         getStoreList({}).then(res => {
           this.applyList = res.pageList.list
         })
@@ -234,6 +256,7 @@ export default {
           if (e.contentList && e.contentList.length > 0) {
             e.content = `满${e.contentList[0]}减${e.contentList[1]}元`
           }
+          e.effectTimeFormat = getDate(e.effectTime, 'year')
         })
         this.tableData = res.pageList.list
         this.storeTotal = res.pageList.count

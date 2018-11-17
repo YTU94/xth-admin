@@ -110,7 +110,8 @@ export default {
       article: {
         title: '',
         author: '',
-        content: ''
+        content: '',
+        lockVersion: ''
       },
       columns: [
         { title: '名称', key: 'title', sortable: true, editable: true },
@@ -186,9 +187,15 @@ export default {
         slug: '',
         imgUrl: this.curArticleImg,
         title: this.article.title,
+        author: this.article.author,
         content: this.article.content
       }
-      this._createArticle(JSON.stringify(data))
+      if (this.isEditing) {
+        data.lockVersion = this.article.lockVersion
+        this._updateArticle(JSON.stringify(data))
+      } else {
+        this._createArticle(JSON.stringify(data))
+      }
     },
     // 改变页码
     pageChange (v) {
@@ -244,7 +251,8 @@ export default {
     // 更新文章
     updateHandle (params) {
       this.isEditing = true
-      this.article = { title: params.row.title, author: params.row.author, content: params.row.content }
+      this.article = { title: params.row.title, author: params.row.author, content: params.row.content, lockVersion: params.row.lockVersion }
+      this.curArticleImg = params.row.imgUrl
       this.showModal = true
     },
     /*

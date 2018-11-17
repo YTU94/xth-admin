@@ -405,6 +405,8 @@ export default {
         status: 'finished',
         url: params.row.imgUrl
       }
+      this.isHot = params.row.isHot
+      this.selectCityId = params.row.cityId
       console.log(this.formDynamic.items)
     },
     /*
