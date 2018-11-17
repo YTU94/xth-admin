@@ -28,22 +28,14 @@
         </FormItem>
         <FormItem label="折扣" v-show="curCouponType === 'RATE'">
           <Row>
-            <input class="form-input" v-model="rateContentList[1]" type="number"></input>
-
-            <!-- <InputNumber
-            :max="100"
-            v-model="rateContent"
-            :formatter="value => `${value}%`"
-            :parser="value => value.replace('%', '')"></InputNumber> -->
+            <input class="form-input" v-model="rateContent" type="number"></input>
           </Row>
         </FormItem>
         <FormItem label="满" v-show="curCouponType === 'FULL_REDUCTION'">
           <Row>
             <input class="form-input" v-model="rateContentList[0]" type="number"></input>
-            <!-- <InpuNumber ></InpuNumber> -->
             <span> 减 </span>
             <input class="form-input" v-model="rateContentList[1]" type="number"></input>
-            <!-- <InputNumber v-model="rateContentList[1]"></InputNumber> -->
           </Row>
         </FormItem>
         <FormItem label="适用范围类型">
@@ -135,7 +127,7 @@ export default {
         { title: '内容', key: 'content', editable: true },
         { title: '使用范围', key: 'applyScopeContent', editable: true },
         { title: '截止时间', key: 'effectTimeFormat', editable: true },
-        { title: '类型', key: 'type', editable: true },
+        { title: '类型', key: 'typeName', editable: true },
         {
           title: '操作',
           key: 'handle',
@@ -185,6 +177,7 @@ export default {
       this.formDynamic.items.forEach(e => {
         e.value = ''
       })
+      data.name = this.formDynamic.items[0].name
       data.content = this.curCouponType === 'RATE' ? this.rateContent : `${this.rateContentList[0]}|${this.rateContentList[1]}`
       data[this.curApplyType] = this.curApply
       data.type = this.curCouponType || 'RATE' // FULL_REDUCTION RATE
@@ -261,6 +254,7 @@ export default {
             e.content = `满${e.contentList[0]}减${e.contentList[1]}元`
           }
           e.effectTimeFormat = getDate(e.effectTime, 'year')
+          e.typeName = e.type === 'RATE' ? '折扣' : '满减'
         })
         this.tableData = res.pageList.list
         this.storeTotal = res.pageList.count
