@@ -108,6 +108,7 @@ export default {
       showModal: false,
       isEditing: false,
       article: {
+        id: '',
         title: '',
         author: '',
         content: '',
@@ -191,6 +192,7 @@ export default {
         content: this.article.content
       }
       if (this.isEditing) {
+        data.id = this.article.id
         data.lockVersion = this.article.lockVersion
         this._updateArticle(JSON.stringify(data))
       } else {
@@ -251,7 +253,7 @@ export default {
     // 更新文章
     updateHandle (params) {
       this.isEditing = true
-      this.article = { title: params.row.title, author: params.row.author, content: params.row.content, lockVersion: params.row.lockVersion }
+      this.article = { id: params.row.id, title: params.row.title, author: params.row.author, content: params.row.content, lockVersion: params.row.lockVersion }
       this.curArticleImg = params.row.imgUrl
       this.showModal = true
     },
