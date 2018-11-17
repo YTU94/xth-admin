@@ -35,7 +35,7 @@
         @cancel="cancel">
         <FormItem label="场馆">
           <Row>
-            <Select v-model="curStoreId" style="width:200px">
+            <Select v-model="curStoreId" filterable style="width:200px">
               <Option v-for="(item, index) in storeList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </Row>
@@ -182,6 +182,7 @@ export default {
         { title: '姓名', key: 'name', sortable: true, editable: true },
         { title: '电话', key: 'phone', editable: true },
         { title: '身份证号', key: 'idNumber', editable: true },
+        { title: '场馆', key: 'storeName', editable: true },
         { title: '性别', key: 'gender', editable: true },
         { title: '星级', key: 'starLevel', editable: true },
         { title: '证书数量', key: 'ccieNum', editable: true },
@@ -343,6 +344,11 @@ export default {
       this.formDynamic.items.forEach(e => {
         e.value = params.row[e.key]
       })
+      this.uploadList[0] = {
+        status: 'finished',
+        url: params.row.imgUrl
+      }
+      this.curStoreId = params.row.storeVo.id
       console.log(this.formDynamic.items)
     },
     /*
@@ -372,6 +378,9 @@ export default {
     },
     _getCoachList (data) {
       getCoachList(data).then(res => {
+        res.pageList.list.forEach(e => {
+          e.storeName = e.storeVo.name
+        })
         this.tableData = res.pageList.list
         this.storeTotal = res.pageList.count
       })

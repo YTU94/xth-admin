@@ -34,7 +34,7 @@
         @cancel="cancel">
         <FormItem label="城市">
           <Row>
-            <Select v-model="selectCityId" v-if="cityList && cityList.length > 0" style="width:200px">
+            <Select v-model="selectCityId" filterable v-if="cityList && cityList.length > 0" style="width:200px">
               <Option v-if="item" v-for="(item, index) in cityList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </Row>
