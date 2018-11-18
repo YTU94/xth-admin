@@ -174,15 +174,15 @@ export default {
     // save
     save () {
       let data = {}
-      this.formDynamic.items.forEach(e => {
-        e.value = ''
-      })
-      data.name = this.formDynamic.items[0].name
+      data.name = this.formDynamic.items[0].value
       data.content = this.curCouponType === 'RATE' ? this.rateContent : `${this.rateContentList[0]}|${this.rateContentList[1]}`
       data[this.curApplyType] = this.curApply
       data.type = this.curCouponType || 'RATE' // FULL_REDUCTION RATE
       data.effectTime = this.effectTime
       this._createCoupon(JSON.stringify(data))
+      this.formDynamic.items.forEach(e => {
+        e.value = ''
+      })
     },
     // 关闭dialog
     cancel () {
